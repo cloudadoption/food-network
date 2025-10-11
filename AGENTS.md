@@ -209,7 +209,7 @@ With this information, you can construct URLs for the preview environment (same 
 - consider that everything you do is clients-side code served on the public web
 - Follow Adobe security guidelines
 - Regularly update dependencies
-- Use the .hlxignore file to prevent filed from being served
+- Use the .hlxignore file to prevent files from being served
 
 ## Contributing
 
