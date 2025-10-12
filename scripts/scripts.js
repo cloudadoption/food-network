@@ -7,11 +7,84 @@ import {
   decorateSections,
   decorateBlocks,
   decorateTemplateAndTheme,
+  getMetadata,
+  toClassName,
   waitForFirstImage,
   loadSection,
   loadSections,
   loadCSS,
 } from './aem.js';
+
+let templateModule;
+
+/**
+ * Loads template-specific assets and returns the module handlers.
+ * @returns {Promise<unknown>} the loaded template module, if any
+ */
+async function loadTemplate() {
+  const template = getMetadata('template');
+  if (!template) return undefined;
+
+  const templateNames = template
+    .split(',')
+    .map((name) => toClassName(name.trim()))
+    .filter(Boolean);
+
+  if (!templateNames.length) return undefined;
+
+  const loadTemplateCSS = async (templateClass) => {
+    try {
+      await loadCSS(`${window.hlx.codeBasePath}/templates/${templateClass}/${templateClass}.css`);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(`failed to load CSS for template: ${templateClass}`, error);
+    }
+  };
+
+  for (let i = 0; i < templateNames.length; i += 1) {
+    // eslint-disable-next-line no-await-in-loop
+    await loadTemplateCSS(templateNames[i]);
+  }
+
+  const lifecycleModules = [];
+
+  for (let i = 0; i < templateNames.length; i += 1) {
+    const templateClass = templateNames[i];
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      const module = await import(`${window.hlx.codeBasePath}/templates/${templateClass}/${templateClass}.js`);
+      const handlers = module?.default || module;
+      if (typeof handlers === 'function') {
+        lifecycleModules.push({ eager: handlers });
+      } else if (handlers && typeof handlers === 'object') {
+        lifecycleModules.push(handlers);
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(`failed to load JS for template: ${templateClass}`, error);
+    }
+  }
+
+  if (!lifecycleModules.length) return undefined;
+
+  const lifecyclePhases = ['eager', 'lazy', 'delayed'];
+  return lifecyclePhases.reduce((aggregated, phase) => {
+    const phaseHandlers = lifecycleModules
+      .map((module) => module?.[phase])
+      .filter((handler) => typeof handler === 'function');
+
+    if (phaseHandlers.length) {
+      aggregated[phase] = async (...args) => {
+        for (let i = 0; i < phaseHandlers.length; i += 1) {
+          // eslint-disable-next-line no-await-in-loop
+          await phaseHandlers[i](...args);
+        }
+      };
+    }
+
+    return aggregated;
+  }, {});
+}
 
 /**
  * Builds hero block and prepends to main in a new section.
@@ -92,9 +165,18 @@ export function decorateMain(main) {
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
+  templateModule = await loadTemplate();
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
+    if (templateModule?.eager) {
+      try {
+        await templateModule.eager(doc);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Template eager phase failed', error);
+      }
+    }
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
@@ -117,6 +199,15 @@ async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadSections(main);
 
+  if (templateModule?.lazy) {
+    try {
+      await templateModule.lazy(doc);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Template lazy phase failed', error);
+    }
+  }
+
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
@@ -134,7 +225,17 @@ async function loadLazy(doc) {
  */
 function loadDelayed() {
   // eslint-disable-next-line import/no-cycle
-  window.setTimeout(() => import('./delayed.js'), 3000);
+  window.setTimeout(async () => {
+    await import('./delayed.js');
+    if (templateModule?.delayed) {
+      try {
+        await templateModule.delayed(document);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Template delayed phase failed', error);
+      }
+    }
+  }, 3000);
   // load anything that can be postponed to the latest here
 }
 

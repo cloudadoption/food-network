@@ -1,0 +1,16 @@
+body.default {
+  --template-max-width: 1200px;
+  background-color: var(--template-background-color, #fffaf5);
+}
+
+body.default main {
+  margin: 0 auto;
+  max-width: var(--template-max-width);
+  padding: 0 1.5rem 4rem;
+}
+
+@media (min-width: 900px) {
+  body.default main {
+    padding: 0 2.5rem 5rem;
+  }
+}
