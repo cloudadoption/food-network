@@ -11,7 +11,15 @@ import {
   loadSection,
   loadSections,
   loadCSS,
+  getMetadata,
+  toClassName,
 } from './aem.js';
+
+/**
+ * Module-level variable to store the loaded template
+ * @type {Object|null}
+ */
+let templateMod = null;
 
 /**
  * Builds hero block and prepends to main in a new section.
@@ -86,15 +94,57 @@ export function decorateMain(main) {
 }
 
 /**
+ * Loads template CSS and JS for a given template name.
+ * Returns an object with eager, lazy, and delayed functions.
+ * @param {string} template The template name
+ * @returns {Promise<Object>} Object with eager, lazy, delayed functions
+ */
+async function loadTemplate(template) {
+  const templateName = toClassName(template);
+  try {
+    // Load CSS (must complete before body is revealed)
+    await loadCSS(`${window.hlx.codeBasePath}/templates/${templateName}/${templateName}.css`);
+  } catch (error) {
+    // CSS file may not exist, that's ok
+  }
+
+  try {
+    // Load JS module
+    const mod = await import(`${window.hlx.codeBasePath}/templates/${templateName}/${templateName}.js`);
+    return {
+      eager: mod.eager || (() => {}),
+      lazy: mod.lazy || (() => {}),
+      delayed: mod.delayed || (() => {}),
+    };
+  } catch (error) {
+    // JS file may not exist, that's ok - return no-op functions
+    return {
+      eager: () => {},
+      lazy: () => {},
+      delayed: () => {},
+    };
+  }
+}
+
+/**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
+
+  // Load template CSS and JS, execute eager phase before first section loads
+  const templateMeta = getMetadata('template');
+  templateMod = templateMeta ? await loadTemplate(templateMeta) : null;
+
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
+    // Execute template eager phase before revealing body
+    if (templateMod && templateMod.eager) {
+      await templateMod.eager(doc);
+    }
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
@@ -126,6 +176,11 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+
+  // Execute template lazy phase
+  if (templateMod && templateMod.lazy) {
+    await templateMod.lazy(doc);
+  }
 }
 
 /**
@@ -133,9 +188,15 @@ async function loadLazy(doc) {
  * without impacting the user experience.
  */
 function loadDelayed() {
-  // eslint-disable-next-line import/no-cycle
-  window.setTimeout(() => import('./delayed.js'), 3000);
-  // load anything that can be postponed to the latest here
+  // Single timeout for all delayed operations
+  window.setTimeout(() => {
+    // eslint-disable-next-line import/no-cycle
+    import('./delayed.js');
+    // Execute template delayed phase
+    if (templateMod && templateMod.delayed) {
+      templateMod.delayed(document);
+    }
+  }, 3000);
 }
 
 async function loadPage() {
