@@ -16,11 +16,18 @@ async function loadAd(block) {
 
   const { width, height } = dimensions[adSize] || dimensions.default;
 
-  // Create FPO image using a placeholder service
-  // Using a solid color with text for demonstration
+  // Create FPO image using a colorful gradient
+  // Using a vibrant gradient to distinguish from gray placeholder
   const fpoUrl = `data:image/svg+xml,${encodeURIComponent(`
     <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
-      <rect width="100%" height="100%" fill="#cccccc"/>
+      <defs>
+        <linearGradient id="adGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+          <stop offset="50%" style="stop-color:#764ba2;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#f093fb;stop-opacity:1" />
+        </linearGradient>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#adGradient)"/>
       <text 
         x="50%" 
         y="50%" 
@@ -28,9 +35,12 @@ async function loadAd(block) {
         text-anchor="middle" 
         font-family="Arial, sans-serif" 
         font-size="16" 
-        fill="#666666"
+        font-weight="bold"
+        fill="#ffffff"
+        stroke="#333333"
+        stroke-width="0.5"
       >
-        Ad Placeholder ${width}x${height}
+        Ad Loaded ${width}x${height}
       </text>
     </svg>
   `)}`;
