@@ -11,6 +11,8 @@ import {
   loadSection,
   loadSections,
   loadCSS,
+  getMetadata,
+  toClassName,
 } from './aem.js';
 
 /**
@@ -86,15 +88,57 @@ export function decorateMain(main) {
 }
 
 /**
+ * Loads template CSS and JS for a given template name.
+ * Returns an object with eager, lazy, and delayed functions.
+ * @param {string} template The template name
+ * @returns {Promise<Object>} Object with eager, lazy, delayed functions
+ */
+async function loadTemplate(template) {
+  const templateName = toClassName(template);
+  try {
+    // Load CSS (must complete before body is revealed)
+    await loadCSS(`${window.hlx.codeBasePath}/templates/${templateName}/${templateName}.css`);
+  } catch (error) {
+    // CSS file may not exist, that's ok
+  }
+
+  try {
+    // Load JS module
+    const mod = await import(`${window.hlx.codeBasePath}/templates/${templateName}/${templateName}.js`);
+    return {
+      eager: mod.eager || (() => {}),
+      lazy: mod.lazy || (() => {}),
+      delayed: mod.delayed || (() => {}),
+    };
+  } catch (error) {
+    // JS file may not exist, that's ok - return no-op functions
+    return {
+      eager: () => {},
+      lazy: () => {},
+      delayed: () => {},
+    };
+  }
+}
+
+/**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
+
+  // Load template CSS and JS, execute eager phase before first section loads
+  const templateMeta = getMetadata('template');
+  const template = templateMeta ? await loadTemplate(templateMeta) : null;
+
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
+    // Execute template eager phase before revealing body
+    if (template && template.eager) {
+      await template.eager(doc);
+    }
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
@@ -107,13 +151,17 @@ async function loadEager(doc) {
   } catch (e) {
     // do nothing
   }
+
+  // Store template for use in lazy and delayed phases
+  return template;
 }
 
 /**
  * Loads everything that doesn't need to be delayed.
  * @param {Element} doc The container element
+ * @param {Object} template The template object with lazy function
  */
-async function loadLazy(doc) {
+async function loadLazy(doc, template) {
   const main = doc.querySelector('main');
   await loadSections(main);
 
@@ -126,22 +174,33 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+
+  // Execute template lazy phase
+  if (template && template.lazy) {
+    await template.lazy(doc);
+  }
 }
 
 /**
  * Loads everything that happens a lot later,
  * without impacting the user experience.
+ * @param {Object} template The template object with delayed function
  */
-function loadDelayed() {
+function loadDelayed(template) {
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
+
+  // Execute template delayed phase
+  if (template && template.delayed) {
+    window.setTimeout(() => template.delayed(document), 3000);
+  }
 }
 
 async function loadPage() {
-  await loadEager(document);
-  await loadLazy(document);
-  loadDelayed();
+  const template = await loadEager(document);
+  await loadLazy(document, template);
+  loadDelayed(template);
 }
 
 loadPage();
