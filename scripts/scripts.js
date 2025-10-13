@@ -11,6 +11,8 @@ import {
   loadSection,
   loadSections,
   loadCSS,
+  getMetadata,
+  toClassName,
 } from './aem.js';
 
 /**
@@ -37,6 +39,33 @@ async function loadFonts() {
     if (!window.location.hostname.includes('localhost')) sessionStorage.setItem('fonts-loaded', 'true');
   } catch (e) {
     // do nothing
+  }
+}
+
+/**
+ * Loads template CSS and returns the template module if it exists
+ * @param {string} template The template name from metadata
+ * @returns {Promise<Object|null>} The template module or null
+ */
+async function loadTemplate(template) {
+  if (!template) return null;
+
+  const templateName = toClassName(template);
+  const cssPath = `${window.hlx.codeBasePath}/templates/${templateName}/${templateName}.css`;
+  const jsPath = `${window.hlx.codeBasePath}/templates/${templateName}/${templateName}.js`;
+
+  try {
+    // Load CSS first (critical for LCP)
+    await loadCSS(cssPath);
+
+    // Load JS module
+    const templateModule = await import(jsPath);
+    return templateModule;
+  } catch (error) {
+    // Template files are optional, so we just log and continue
+    // eslint-disable-next-line no-console
+    console.log(`Template ${templateName} not found or failed to load:`, error.message);
+    return null;
   }
 }
 
@@ -92,9 +121,20 @@ export function decorateMain(main) {
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
+
+  // Load template CSS and JS early
+  const template = getMetadata('template');
+  const templateModule = await loadTemplate(template);
+
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
+
+    // Call template's eager function before revealing the body
+    if (templateModule && typeof templateModule.eager === 'function') {
+      await templateModule.eager(doc);
+    }
+
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
@@ -107,6 +147,9 @@ async function loadEager(doc) {
   } catch (e) {
     // do nothing
   }
+
+  // Store template module for use in lazy and delayed phases
+  window.templateModule = templateModule;
 }
 
 /**
@@ -126,6 +169,11 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+
+  // Call template's lazy function
+  if (window.templateModule && typeof window.templateModule.lazy === 'function') {
+    await window.templateModule.lazy(doc);
+  }
 }
 
 /**
@@ -135,6 +183,12 @@ async function loadLazy(doc) {
 function loadDelayed() {
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
+
+  // Call template's delayed function
+  if (window.templateModule && typeof window.templateModule.delayed === 'function') {
+    window.templateModule.delayed();
+  }
+
   // load anything that can be postponed to the latest here
 }
 

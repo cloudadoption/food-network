@@ -1,0 +1,38 @@
+/* Simple Template Styles */
+
+body.simple {
+  --simple-primary: #3498db;
+  --simple-accent: #2ecc71;
+  background: #f8f9fa;
+}
+
+body.simple main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+body.simple h1 {
+  color: var(--simple-primary);
+  border-bottom: 3px solid var(--simple-accent);
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+}
+
+body.simple h2 {
+  color: var(--simple-primary);
+  margin-top: 2rem;
+}
+
+body.simple a {
+  color: var(--simple-primary);
+  text-decoration: none;
+  border-bottom: 1px solid var(--simple-accent);
+}
+
+body.simple a:hover {
+  border-bottom-width: 2px;
+}
+
