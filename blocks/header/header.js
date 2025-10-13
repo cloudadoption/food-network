@@ -4,6 +4,9 @@ import { loadFragment } from '../fragment/fragment.js';
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
 
+// Cache for loaded flyouts
+const flyoutCache = new Map();
+
 function closeOnEscape(e) {
   if (e.code === 'Escape') {
     const nav = document.getElementById('nav');
@@ -49,6 +52,54 @@ function openOnKeydown(e) {
 
 function focusNavSection() {
   document.activeElement.addEventListener('keydown', openOnKeydown);
+}
+
+/**
+ * Loads a flyout menu dynamically
+ * @param {Element} navItem The nav item element
+ * @param {string} flyoutId The flyout identifier
+ * @returns {Promise<void>}
+ */
+async function loadFlyout(navItem, flyoutId) {
+  // Check if already loaded
+  if (flyoutCache.has(flyoutId)) {
+    const cachedContent = flyoutCache.get(flyoutId);
+    const existingFlyout = navItem.querySelector('.nav-flyout');
+    if (!existingFlyout && cachedContent) {
+      navItem.appendChild(cachedContent.cloneNode(true));
+    }
+    return;
+  }
+
+  // Show loading state
+  navItem.classList.add('nav-flyout-loading');
+
+  try {
+    const flyoutPath = `/fragments/nav/${flyoutId}`;
+    const fragment = await loadFragment(flyoutPath);
+
+    if (fragment) {
+      const flyoutContainer = document.createElement('div');
+      flyoutContainer.className = 'nav-flyout';
+
+      // Extract content from fragment
+      const content = fragment.querySelector('.section > div') || fragment.firstElementChild;
+      if (content) {
+        flyoutContainer.appendChild(content.cloneNode(true));
+      }
+
+      // Cache the flyout
+      flyoutCache.set(flyoutId, flyoutContainer.cloneNode(true));
+
+      // Add to nav item
+      navItem.appendChild(flyoutContainer);
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(`Failed to load flyout: ${flyoutId}`, error);
+  } finally {
+    navItem.classList.remove('nav-flyout-loading');
+  }
 }
 
 /**
@@ -110,7 +161,7 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
 export default async function decorate(block) {
   // load nav as fragment
   const navMeta = getMetadata('nav');
-  const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
+  const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/fragments/nav';
   const fragment = await loadFragment(navPath);
 
   // decorate nav DOM
@@ -135,14 +186,56 @@ export default async function decorate(block) {
   const navSections = nav.querySelector('.nav-sections');
   if (navSections) {
     navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
-      if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
-      navSection.addEventListener('click', () => {
-        if (isDesktop.matches) {
+      const flyoutId = navSection.getAttribute('data-flyout');
+
+      if (flyoutId) {
+        // This nav item has a flyout
+        navSection.classList.add('nav-drop');
+
+        // Desktop: load on mouseenter, show on click
+        let flyoutLoaded = false;
+        navSection.addEventListener('mouseenter', async () => {
+          if (isDesktop.matches && !flyoutLoaded) {
+            await loadFlyout(navSection, flyoutId);
+            flyoutLoaded = true;
+          }
+        });
+
+        // Handle click for both mobile and desktop
+        navSection.addEventListener('click', async (e) => {
+          e.preventDefault();
           const expanded = navSection.getAttribute('aria-expanded') === 'true';
-          toggleAllNavSections(navSections);
-          navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-        }
-      });
+
+          if (isDesktop.matches) {
+            // Desktop: toggle flyout
+            toggleAllNavSections(navSections);
+            navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+
+            // Ensure flyout is loaded
+            if (!flyoutLoaded) {
+              await loadFlyout(navSection, flyoutId);
+              flyoutLoaded = true;
+            }
+          } else {
+            // Mobile: load and show flyout
+            if (!flyoutLoaded) {
+              await loadFlyout(navSection, flyoutId);
+              flyoutLoaded = true;
+            }
+            navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+          }
+        });
+      } else if (navSection.querySelector('ul')) {
+        // Legacy support for inline nested lists
+        navSection.classList.add('nav-drop');
+        navSection.addEventListener('click', () => {
+          if (isDesktop.matches) {
+            const expanded = navSection.getAttribute('aria-expanded') === 'true';
+            toggleAllNavSections(navSections);
+            navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+          }
+        });
+      }
     });
   }
 

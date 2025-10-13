@@ -260,6 +260,117 @@ header nav .nav-sections ul > li > ul > li {
   header nav .nav-sections .default-content-wrapper > ul > li > ul > li {
     padding: 8px 0;
   }
+
+  /* Flyout styles for desktop */
+  header nav .nav-sections .nav-flyout {
+    display: none;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 100%;
+    margin-top: 16px;
+    background-color: var(--background-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    padding: 24px;
+    min-width: 600px;
+    max-width: 800px;
+    z-index: 100;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] .nav-flyout {
+    display: block;
+  }
+
+  header nav .nav-sections .nav-flyout::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid var(--background-color);
+  }
+
+  header nav .nav-sections .nav-flyout > div {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 32px;
+  }
+
+  header nav .nav-sections .nav-flyout h3 {
+    font-size: var(--body-font-size-m);
+    font-weight: 700;
+    margin: 0 0 12px;
+    color: var(--text-color);
+  }
+
+  header nav .nav-sections .nav-flyout ul {
+    display: block;
+    margin: 0;
+    padding: 0;
+  }
+
+  header nav .nav-sections .nav-flyout ul li {
+    padding: 6px 0;
+    font-weight: 400;
+  }
+
+  header nav .nav-sections .nav-flyout a:any-link {
+    color: var(--text-color);
+    text-decoration: none;
+  }
+
+  header nav .nav-sections .nav-flyout a:hover {
+    color: var(--link-hover-color);
+    text-decoration: underline;
+  }
+
+  /* Loading state */
+  header nav .nav-sections .nav-flyout-loading::after {
+    content: '...';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 8px;
+    font-size: var(--body-font-size-s);
+    color: var(--text-color);
+  }
+}
+
+/* Mobile flyout styles */
+@media (width < 900px) {
+  header nav[aria-expanded='true'] .nav-sections .nav-flyout {
+    display: none;
+    margin-top: 12px;
+    padding-left: 16px;
+  }
+
+  header nav[aria-expanded='true'] .nav-sections li[aria-expanded='true'] .nav-flyout {
+    display: block;
+  }
+
+  header nav .nav-sections .nav-flyout > div {
+    display: block;
+  }
+
+  header nav .nav-sections .nav-flyout > div > div {
+    margin-bottom: 24px;
+  }
+
+  header nav .nav-sections .nav-flyout h3 {
+    font-size: var(--body-font-size-m);
+    font-weight: 600;
+    margin: 0 0 8px;
+  }
+
+  header nav .nav-sections .nav-flyout ul li {
+    padding: 4px 0;
+  }
 }
 
 /* tools */
