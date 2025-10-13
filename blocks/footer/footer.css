@@ -1,20 +1,87 @@
 footer {
-  background-color: var(--light-color);
+  background-color: var(--dark-color);
+  color: white;
   font-size: var(--body-font-size-xs);
 }
 
-footer .footer > div {
+footer .footer {
   margin: auto;
   max-width: 1200px;
-  padding: 40px 24px 24px;
+  padding: 24px;
 }
 
 footer .footer p {
   margin: 0;
 }
 
+footer .footer ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+footer .footer li {
+  margin: 0 0 12px;
+}
+
+footer .footer a {
+  color: white;
+  text-decoration: none;
+}
+
+footer .footer a:hover {
+  text-decoration: underline;
+}
+
+/* Footer links section - main navigation */
+footer .footer .footer-links ul {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Footer meta section - secondary links and copyright */
+footer .footer .footer-meta {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid rgb(255 255 255 / 20%);
+}
+
+footer .footer .footer-meta ul {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Desktop layout */
 @media (width >= 900px) {
-  footer .footer > div {
-    padding: 40px 32px 24px;
+  footer .footer {
+    padding: 32px;
+  }
+
+  /* Multi-column layout for main links */
+  footer .footer .footer-links ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px 24px;
+  }
+
+  /* Horizontal layout for meta section */
+  footer .footer .footer-meta ul {
+    flex-flow: row wrap;
+    gap: 24px;
+  }
+
+  footer .footer .footer-meta li:not(:last-child)::after {
+    content: '|';
+    margin-left: 24px;
+    opacity: 0.5;
+  }
+}
+
+@media (width >= 1200px) {
+  /* Optimize for larger screens - fit more columns */
+  footer .footer .footer-links ul {
+    grid-template-columns: repeat(7, 1fr);
   }
 }
