@@ -1,0 +1,96 @@
+.ad {
+  --ad-max-width: 300px;
+  --ad-aspect-ratio: 200%;
+}
+
+.ad .ad-slot {
+  position: relative;
+  width: 100%;
+  max-width: var(--ad-max-width);
+  margin: 0 auto;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.ad .ad-slot::before {
+  content: '';
+  display: block;
+  padding-top: var(--ad-aspect-ratio);
+}
+
+.ad .ad-placeholder,
+.ad .ad-slot img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ad .ad-placeholder {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  padding: 12px;
+  border: 1px solid #d7d7d7;
+  border-radius: 4px;
+  background-color: #e8e8e8;
+  color: #505050;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  box-sizing: border-box;
+  z-index: 1;
+}
+
+.ad .ad-placeholder-size {
+  font-size: 0.75rem;
+  text-transform: none;
+  letter-spacing: normal;
+  color: #6a6a6a;
+}
+
+.ad .ad-slot img {
+  border: 1px solid #d7d7d7;
+  border-radius: 4px;
+  object-fit: contain;
+  background-color: #fff;
+  box-sizing: border-box;
+  z-index: 0;
+}
+
+.ad .ad-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background-color: rgb(0 0 0 / 60%);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.ad-banner {
+  --ad-max-width: 728px;
+  --ad-aspect-ratio: 12.37%;
+}
+
+.ad-large-banner {
+  --ad-max-width: 970px;
+  --ad-aspect-ratio: 19.07%;
+}
+
+.ad-square {
+  --ad-max-width: 300px;
+  --ad-aspect-ratio: 100%;
+}
+
+.ad-default {
+  --ad-max-width: 300px;
+  --ad-aspect-ratio: 200%;
+}
