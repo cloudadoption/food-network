@@ -1,6 +1,6 @@
 /* Recipe template styles */
 
-@layer blocks {
+@layer templates {
   body.recipe {
     --recipe-accent-color: #e74c3c;
     --recipe-bg-color: #fdf6f0;

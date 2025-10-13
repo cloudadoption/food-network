@@ -11,7 +11,7 @@
  */
 
 /* CSS Cascade Layers */
-@layer global, utilities, blocks;
+@layer global, utilities, templates, blocks;
 
 @layer global {
   :root {
