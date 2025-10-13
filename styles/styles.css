@@ -44,7 +44,9 @@
     --heading-font-size-xs: 18px;
 
     /* nav height */
-    --nav-height: 64px;
+    --header-ad-height: 100px;
+    --nav-height: 65px;
+    --header-height: calc(var(--header-ad-height) + var(--nav-height));
   }
 
   /* fallback fonts */
@@ -87,7 +89,7 @@
   }
 
   header {
-    height: var(--nav-height);
+    height: var(--header-height);
   }
 
   header .header,
