@@ -1,7 +1,8 @@
-.hero-container .hero-wrapper {
-  max-width: unset;
-  padding: 0;
-}
+@layer blocks {
+  .hero-container .hero-wrapper {
+    max-width: unset;
+    padding: 0;
+  }
 
 .hero {
   position: relative;
@@ -30,8 +31,9 @@
   height: 100%;
 }
 
-@media (width >= 900px) {
-  .hero {
-    padding: 40px 32px;
+  @media (width >= 900px) {
+    .hero {
+      padding: 40px 32px;
+    }
   }
 }
