@@ -7,6 +7,7 @@
  * Use this for critical functionality that affects initial render
  * @param {Document} doc The document
  */
+// eslint-disable-next-line no-unused-vars
 export async function eager(doc) {
   // no operations
 }
@@ -16,8 +17,9 @@ export async function eager(doc) {
  * Use this for enhancements that improve the experience but aren't critical
  * @param {Document} doc The document
  */
+// eslint-disable-next-line no-unused-vars
 export async function lazy(doc) {
-// no operations
+  // no operations
 }
 
 /**
@@ -25,6 +27,7 @@ export async function lazy(doc) {
  * Use this for analytics, social sharing, or other features that can wait
  * @param {Document} doc The document
  */
+// eslint-disable-next-line no-unused-vars
 export async function delayed(doc) {
-// no operations
+  // no operations
 }
