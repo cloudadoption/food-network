@@ -1,0 +1,74 @@
+/* Recipe Ingredients Block Styles */
+
+.recipe-ingredients {
+  background-color: var(--light-color);
+  border-radius: 8px;
+  padding: 24px;
+  margin: 32px 0;
+}
+
+.recipe-ingredients .ingredients-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.recipe-ingredients .ingredient-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.recipe-ingredients .ingredient-item:last-child {
+  border-bottom: none;
+}
+
+.recipe-ingredients .ingredient-checkbox {
+  flex-shrink: 0;
+  margin-top: 4px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--link-color);
+}
+
+.recipe-ingredients .ingredient-label {
+  flex: 1;
+  font-size: var(--body-font-size-m);
+  line-height: 1.6;
+  cursor: pointer;
+  transition: color 0.2s ease, text-decoration 0.2s ease;
+  user-select: none;
+}
+
+.recipe-ingredients .ingredient-label.checked {
+  color: var(--dark-color);
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+/* Hover effects */
+.recipe-ingredients .ingredient-item:hover .ingredient-label:not(.checked) {
+  color: var(--link-color);
+}
+
+/* Responsive adjustments */
+@media (width >= 600px) {
+  .recipe-ingredients {
+    padding: 32px;
+  }
+
+  .recipe-ingredients .ingredient-checkbox {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+@media (width >= 900px) {
+  .recipe-ingredients {
+    padding: 40px;
+  }
+}
+
