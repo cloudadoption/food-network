@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh *)",
+      "Bash(curl *)",
+      "Bash(jq *)",
+      "Bash(awk *)",
+      "Bash(sed *)",
+      "Bash(git *)",
+      "Bash(npm *)",
+      "Bash(npx *)",
+      "Bash(aem *)",
+      "Bash(node *)",
+      "Bash(ls *)",
+      "Bash(pwd)",
+      "Bash(cd *)",
+      "Bash(mkdir *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Read(/Users/ssteimer/dev/projects/food-network/*)",
+      "Edit(/Users/ssteimer/dev/projects/food-network/*)",
+      "Write(/Users/ssteimer/dev/projects/food-network/*)",
+      "Read(/Users/ssteimer/dev/projects/food-network-worktrees/*)",
+      "Edit(/Users/ssteimer/dev/projects/food-network-worktrees/*)",
+      "Write(/Users/ssteimer/dev/projects/food-network-worktrees/*)",
+      "Glob(*)",
+      "Grep(*)"
+    ],
+    "deny": [
+      "Read(/Users/ssteimer/dev/projects/food-network/.env*)",
+      "Edit(/Users/ssteimer/dev/projects/food-network/.env*)",
+      "Write(/Users/ssteimer/dev/projects/food-network/.env*)",
+      "Read(/Users/ssteimer/dev/projects/food-network-worktrees/*/.env*)",
+      "Edit(/Users/ssteimer/dev/projects/food-network-worktrees/*/.env*)",
+      "Write(/Users/ssteimer/dev/projects/food-network-worktrees/*/.env*)"
+    ]
+  }
+}
