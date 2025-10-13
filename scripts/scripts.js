@@ -16,6 +16,12 @@ import {
 } from './aem.js';
 
 /**
+ * Module-level variable to store the loaded template
+ * @type {Object|null}
+ */
+let templateMod = null;
+
+/**
  * Builds hero block and prepends to main in a new section.
  * @param {Element} main The container element
  */
@@ -130,14 +136,14 @@ async function loadEager(doc) {
 
   // Load template CSS and JS, execute eager phase before first section loads
   const templateMeta = getMetadata('template');
-  const template = templateMeta ? await loadTemplate(templateMeta) : null;
+  templateMod = templateMeta ? await loadTemplate(templateMeta) : null;
 
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
     // Execute template eager phase before revealing body
-    if (template && template.eager) {
-      await template.eager(doc);
+    if (templateMod && templateMod.eager) {
+      await templateMod.eager(doc);
     }
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
@@ -151,17 +157,13 @@ async function loadEager(doc) {
   } catch (e) {
     // do nothing
   }
-
-  // Store template for use in lazy and delayed phases
-  return template;
 }
 
 /**
  * Loads everything that doesn't need to be delayed.
  * @param {Element} doc The container element
- * @param {Object} template The template object with lazy function
  */
-async function loadLazy(doc, template) {
+async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadSections(main);
 
@@ -176,31 +178,31 @@ async function loadLazy(doc, template) {
   loadFonts();
 
   // Execute template lazy phase
-  if (template && template.lazy) {
-    await template.lazy(doc);
+  if (templateMod && templateMod.lazy) {
+    await templateMod.lazy(doc);
   }
 }
 
 /**
  * Loads everything that happens a lot later,
  * without impacting the user experience.
- * @param {Object} template The template object with delayed function
  */
-function loadDelayed(template) {
-  // eslint-disable-next-line import/no-cycle
-  window.setTimeout(() => import('./delayed.js'), 3000);
-  // load anything that can be postponed to the latest here
-
-  // Execute template delayed phase
-  if (template && template.delayed) {
-    window.setTimeout(() => template.delayed(document), 3000);
-  }
+function loadDelayed() {
+  // Single timeout for all delayed operations
+  window.setTimeout(() => {
+    // eslint-disable-next-line import/no-cycle
+    import('./delayed.js');
+    // Execute template delayed phase
+    if (templateMod && templateMod.delayed) {
+      templateMod.delayed(document);
+    }
+  }, 3000);
 }
 
 async function loadPage() {
-  const template = await loadEager(document);
-  await loadLazy(document, template);
-  loadDelayed(template);
+  await loadEager(document);
+  await loadLazy(document);
+  loadDelayed();
 }
 
 loadPage();
