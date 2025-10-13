@@ -57,7 +57,7 @@ function focusNavSection() {
  * @param {Boolean} expanded Whether the element should be expanded or collapsed
  */
 function toggleAllNavSections(sections, expanded = false) {
-  sections.querySelectorAll('.nav-sections .default-content-wrapper > ul > li').forEach((section) => {
+  sections.querySelectorAll('ul > li.nav-drop').forEach((section) => {
     section.setAttribute('aria-expanded', expanded);
   });
 }
@@ -104,46 +104,160 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
 }
 
 /**
+ * Loads a flyout fragment for a navigation section
+ * @param {string} sectionId The section identifier (e.g., 'recipes', 'shows')
+ * @returns {Promise<HTMLElement|null>} The flyout content element
+ */
+async function loadFlyout(sectionId) {
+  try {
+    const fragment = await loadFragment(`/fragments/nav/${sectionId}`);
+    if (fragment && fragment.firstElementChild) {
+      return fragment.firstElementChild;
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.warn(`Failed to load flyout for ${sectionId}:`, error);
+  }
+  return null;
+}
+
+/**
  * loads and decorates the header, mainly the nav
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
   // load nav as fragment
   const navMeta = getMetadata('nav');
-  const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
+  const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/fragments/nav';
   const fragment = await loadFragment(navPath);
 
   // decorate nav DOM
   block.textContent = '';
   const nav = document.createElement('nav');
   nav.id = 'nav';
-  while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
 
-  const classes = ['brand', 'sections', 'tools'];
-  classes.forEach((c, i) => {
-    const section = nav.children[i];
-    if (section) section.classList.add(`nav-${c}`);
+  // Process fragment sections - they have section-metadata with id
+  const sections = Array.from(fragment.querySelectorAll(':scope > div'));
+
+  // Helper to find section by metadata id
+  const findSection = (id) => sections.find((s) => {
+    const metadata = s.querySelector('.section-metadata');
+    if (metadata) {
+      const idCell = Array.from(metadata.querySelectorAll('div > div')).find(
+        (cell) => cell.textContent.trim().toLowerCase() === 'id',
+      );
+      if (idCell && idCell.nextElementSibling) {
+        return idCell.nextElementSibling.textContent.trim().toLowerCase() === id;
+      }
+    }
+    return false;
   });
 
-  const navBrand = nav.querySelector('.nav-brand');
-  const brandLink = navBrand.querySelector('.button');
-  if (brandLink) {
-    brandLink.className = '';
-    brandLink.closest('.button-container').className = '';
+  const adSection = findSection('ad');
+  const brandSection = findSection('brand');
+  const mainSections = findSection('sections');
+  const toolsSection = findSection('tools');
+
+  // Create trending line (ad section)
+  if (adSection) {
+    const trendingLine = document.createElement('div');
+    trendingLine.className = 'nav-trending';
+    const adContent = adSection.querySelector('ul');
+    if (adContent) {
+      trendingLine.appendChild(adContent.cloneNode(true));
+    }
+    nav.appendChild(trendingLine);
   }
 
-  const navSections = nav.querySelector('.nav-sections');
-  if (navSections) {
-    navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
-      if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
-      navSection.addEventListener('click', () => {
-        if (isDesktop.matches) {
-          const expanded = navSection.getAttribute('aria-expanded') === 'true';
-          toggleAllNavSections(navSections);
-          navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+  // Create brand section
+  if (brandSection) {
+    const navBrand = document.createElement('div');
+    navBrand.className = 'nav-brand';
+    const logoIcon = brandSection.querySelector('.icon-logo');
+    if (logoIcon) {
+      const logoLink = document.createElement('a');
+      logoLink.href = '/';
+      logoLink.setAttribute('aria-label', 'Food Network Home');
+      logoLink.appendChild(logoIcon.cloneNode(true));
+      navBrand.appendChild(logoLink);
+    }
+    nav.appendChild(navBrand);
+  }
+
+  // Create main navigation sections
+  if (mainSections) {
+    const navSections = document.createElement('div');
+    navSections.className = 'nav-sections';
+    const sectionsList = mainSections.querySelector('ul');
+
+    if (sectionsList) {
+      const sectionsUl = document.createElement('ul');
+
+      Array.from(sectionsList.children).forEach((item) => {
+        const li = document.createElement('li');
+        const text = item.textContent.trim();
+        const link = item.querySelector('a');
+
+        if (link) {
+          // Item with link
+          li.appendChild(link.cloneNode(true));
+        } else {
+          // Item without link - potential flyout trigger
+          const span = document.createElement('span');
+          span.textContent = text;
+          span.className = 'nav-drop';
+          li.appendChild(span);
+          li.classList.add('nav-drop');
+          li.setAttribute('aria-expanded', 'false');
+
+          // Normalize section id for flyout loading
+          const sectionId = text.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
+          // Add click handler for flyout loading
+          li.addEventListener('click', async (e) => {
+            e.stopPropagation();
+
+            if (isDesktop.matches) {
+              const expanded = li.getAttribute('aria-expanded') === 'true';
+              toggleAllNavSections(navSections);
+
+              if (!expanded) {
+                li.setAttribute('aria-expanded', 'true');
+
+                // Load flyout content if not already loaded
+                if (!li.querySelector('.nav-flyout')) {
+                  const flyoutContent = await loadFlyout(sectionId);
+                  if (flyoutContent) {
+                    const flyout = document.createElement('div');
+                    flyout.className = 'nav-flyout';
+                    flyout.appendChild(flyoutContent);
+                    li.appendChild(flyout);
+                  }
+                }
+              } else {
+                li.setAttribute('aria-expanded', 'false');
+              }
+            }
+          });
         }
+
+        sectionsUl.appendChild(li);
       });
-    });
+
+      navSections.appendChild(sectionsUl);
+    }
+    nav.appendChild(navSections);
+  }
+
+  // Create tools section
+  if (toolsSection) {
+    const navTools = document.createElement('div');
+    navTools.className = 'nav-tools';
+    const toolsList = toolsSection.querySelector('ul');
+    if (toolsList) {
+      navTools.appendChild(toolsList.cloneNode(true));
+    }
+    nav.appendChild(navTools);
   }
 
   // hamburger for mobile
@@ -152,6 +266,7 @@ export default async function decorate(block) {
   hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-label="Open navigation">
       <span class="nav-hamburger-icon"></span>
     </button>`;
+  const navSections = nav.querySelector('.nav-sections');
   hamburger.addEventListener('click', () => toggleMenu(nav, navSections));
   nav.prepend(hamburger);
   nav.setAttribute('aria-expanded', 'false');
