@@ -1,0 +1,85 @@
+/* Default size: 300x600 */
+.ad {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ddd;
+  margin: 20px auto;
+  position: relative;
+  overflow: hidden;
+  width: 300px;
+  height: 600px;
+}
+
+/* Banner: 728x90 */
+.ad.banner {
+  width: 728px;
+  height: 90px;
+}
+
+/* Large Banner: 970x185 */
+.ad.large-banner {
+  width: 970px;
+  height: 185px;
+}
+
+/* Square: 300x300 */
+.ad.square {
+  width: 300px;
+  height: 300px;
+}
+
+/* Loading state */
+.ad::before {
+  content: 'Advertisement';
+  color: #999;
+  font-size: 14px;
+  font-family: var(--body-font-family);
+  text-align: center;
+}
+
+/* Loaded state - hide the placeholder text */
+.ad.loaded::before {
+  display: none;
+}
+
+/* Ad content container */
+.ad > div {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Ad image styling */
+.ad img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Responsive adjustments for mobile */
+@media (width <= 600px) {
+  .ad.banner,
+  .ad.large-banner {
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    aspect-ratio: 728 / 90;
+  }
+
+  .ad.large-banner {
+    aspect-ratio: 970 / 185;
+  }
+}
+
+/* Responsive adjustments for tablet */
+@media (width >= 600px) and (width <= 900px) {
+  .ad.large-banner {
+    width: 100%;
+    max-width: 728px;
+    height: auto;
+    aspect-ratio: 970 / 185;
+  }
+}
