@@ -7,10 +7,8 @@
   margin: 20px auto;
   position: relative;
   overflow: hidden;
-}
 
-/* Default ad size: 300x600 */
-.ad {
+  /* Default ad size: 300x600 */
   width: 300px;
   height: 600px;
 }
@@ -59,7 +57,7 @@
 }
 
 /* Mobile responsiveness */
-@media (max-width: 600px) {
+@media (width <= 600px) {
   /* On mobile, banners and large banners scale down */
   .ad.banner,
   .ad.large-banner {
@@ -68,7 +66,7 @@
   }
 
   /* Default ad is hidden on mobile, or scaled down */
-  .ad:not(.banner):not(.large-banner):not(.square) {
+  .ad:not(.banner, .large-banner, .square) {
     width: 300px;
     height: 250px;
   }
@@ -81,7 +79,7 @@
 }
 
 /* Tablet and up */
-@media (min-width: 900px) {
+@media (width >= 900px) {
   .ad {
     margin: 30px auto;
   }

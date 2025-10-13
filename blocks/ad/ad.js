@@ -6,10 +6,8 @@ export default async function decorate(block) {
   // Extract ad size from block classes
   // Expected structure: authors can add a variant like "banner", "large-banner", "square"
   // If no variant specified, defaults to 300x600
-  
-  const adSize = [...block.classList].find((cls) => 
-    ['banner', 'large-banner', 'square'].includes(cls)
-  );
+
+  const adSize = [...block.classList].find((cls) => ['banner', 'large-banner', 'square'].includes(cls));
 
   // Clear the block content - we'll replace with ad placeholder
   block.innerHTML = '';
@@ -27,8 +25,8 @@ export default async function decorate(block) {
  * @param {Element} block The ad block element
  */
 export async function loadAd(block) {
-  const adSize = block.dataset.adSize;
-  
+  const { adSize } = block.dataset;
+
   // Get dimensions based on ad size
   const dimensions = {
     banner: { width: 728, height: 90 },
@@ -64,7 +62,7 @@ export async function loadAd(block) {
   img.alt = `Advertisement ${width}x${height}`;
   img.width = width;
   img.height = height;
-  
+
   block.appendChild(img);
   block.classList.add('loaded');
 }
@@ -76,4 +74,3 @@ if (typeof window !== 'undefined') {
     await Promise.all([...adBlocks].map((block) => loadAd(block)));
   };
 }
-
