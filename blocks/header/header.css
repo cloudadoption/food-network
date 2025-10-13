@@ -224,11 +224,93 @@ header nav .nav-sections ul > li > ul > li {
     margin: 0;
   }
 
+  /* Flyout content styles - must come before static dropdown for specificity */
+  header nav .nav-flyout {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 32px;
+  }
+
+  header nav .nav-flyout > div {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  header nav .nav-flyout h6 {
+    margin: 0 0 8px;
+    font-size: var(--body-font-size-m);
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-color);
+  }
+
+  header nav .nav-flyout ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  header nav .nav-flyout ul li {
+    padding: 0;
+    font-size: var(--body-font-size-s);
+  }
+
+  header nav .nav-flyout a {
+    text-decoration: none;
+    color: var(--text-color);
+    transition: color 0.2s;
+  }
+
+  header nav .nav-flyout a:hover {
+    color: var(--link-hover-color);
+  }
+
+  /* Flyout container styles */
+  header nav .nav-sections .nav-flyout-container {
+    display: none;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] .nav-flyout-container {
+    display: block;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 100%;
+    margin-top: 16px;
+    padding: 32px;
+    background-color: var(--light-color);
+    white-space: initial;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+    border-radius: 4px;
+    min-width: 600px;
+    max-width: 900px;
+    z-index: 100;
+  }
+
+  header nav .nav-sections .nav-flyout-container::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid var(--light-color);
+  }
+
+  /* List item styles */
   header nav .nav-sections .default-content-wrapper > ul > li {
     flex: 0 1 auto;
     position: relative;
   }
 
+  /* Static dropdown styles */
   header nav .nav-sections .default-content-wrapper > ul > li > ul {
     display: none;
     position: relative;

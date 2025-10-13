@@ -1,8 +1,11 @@
-import { getMetadata } from '../../scripts/aem.js';
+import { getMetadata, toClassName } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
+
+// Cache for loaded flyouts
+const flyoutCache = new Map();
 
 function closeOnEscape(e) {
   if (e.code === 'Escape') {
@@ -38,7 +41,7 @@ function closeOnFocusLost(e) {
 
 function openOnKeydown(e) {
   const focused = document.activeElement;
-  const isNavDrop = focused.className === 'nav-drop';
+  const isNavDrop = focused.className.includes('nav-drop');
   if (isNavDrop && (e.code === 'Enter' || e.code === 'Space')) {
     const dropExpanded = focused.getAttribute('aria-expanded') === 'true';
     // eslint-disable-next-line no-use-before-define
@@ -49,6 +52,35 @@ function openOnKeydown(e) {
 
 function focusNavSection() {
   document.activeElement.addEventListener('keydown', openOnKeydown);
+}
+
+/**
+ * Load a flyout fragment dynamically
+ * @param {string} sectionId The section identifier (e.g., 'recipes', 'shows')
+ * @returns {Promise<HTMLElement|null>} The flyout content element
+ */
+async function loadFlyout(sectionId) {
+  if (flyoutCache.has(sectionId)) {
+    return flyoutCache.get(sectionId);
+  }
+
+  try {
+    const flyoutPath = `/fragments/nav/${toClassName(sectionId)}`;
+    const fragment = await loadFragment(flyoutPath);
+    if (fragment) {
+      const flyoutContent = document.createElement('div');
+      flyoutContent.className = 'nav-flyout';
+      while (fragment.firstElementChild) {
+        flyoutContent.append(fragment.firstElementChild);
+      }
+      flyoutCache.set(sectionId, flyoutContent);
+      return flyoutContent;
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.warn(`Failed to load flyout for ${sectionId}:`, error);
+  }
+  return null;
 }
 
 /**
@@ -110,7 +142,7 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
 export default async function decorate(block) {
   // load nav as fragment
   const navMeta = getMetadata('nav');
-  const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
+  const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/fragments/nav';
   const fragment = await loadFragment(navPath);
 
   // decorate nav DOM
@@ -135,14 +167,58 @@ export default async function decorate(block) {
   const navSections = nav.querySelector('.nav-sections');
   if (navSections) {
     navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
-      if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
-      navSection.addEventListener('click', () => {
-        if (isDesktop.matches) {
-          const expanded = navSection.getAttribute('aria-expanded') === 'true';
-          toggleAllNavSections(navSections);
-          navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-        }
-      });
+      const linkOrText = navSection.querySelector('a') || navSection.firstChild;
+      const sectionText = linkOrText.textContent.trim();
+      const sectionId = toClassName(sectionText);
+
+      // Check if this section should have a flyout (no nested ul initially)
+      const hasStaticDropdown = navSection.querySelector('ul');
+
+      if (!hasStaticDropdown) {
+        // This is a candidate for dynamic flyout loading
+        navSection.classList.add('nav-drop');
+        navSection.dataset.sectionId = sectionId;
+
+        let flyoutContainer = null;
+
+        const handleNavSectionClick = async (e) => {
+          if (isDesktop.matches) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const expanded = navSection.getAttribute('aria-expanded') === 'true';
+            toggleAllNavSections(navSections);
+
+            if (!expanded) {
+              // Load flyout if not already loaded
+              if (!flyoutContainer) {
+                const flyout = await loadFlyout(sectionId);
+                if (flyout) {
+                  flyoutContainer = document.createElement('div');
+                  flyoutContainer.className = 'nav-flyout-container';
+                  flyoutContainer.append(flyout.cloneNode(true));
+                  navSection.append(flyoutContainer);
+                }
+              }
+              navSection.setAttribute('aria-expanded', 'true');
+            } else {
+              navSection.setAttribute('aria-expanded', 'false');
+            }
+          }
+        };
+
+        navSection.addEventListener('click', handleNavSectionClick);
+      } else {
+        // Static dropdown, use original behavior
+        navSection.classList.add('nav-drop');
+        navSection.addEventListener('click', () => {
+          if (isDesktop.matches) {
+            const expanded = navSection.getAttribute('aria-expanded') === 'true';
+            toggleAllNavSections(navSections);
+            navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+          }
+        });
+      }
     });
   }
 
