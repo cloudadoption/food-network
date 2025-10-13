@@ -22,9 +22,9 @@
 
   /* nav */
   header nav {
-    display: flex;
+    display: grid;
+    grid-template-columns: 32px 48px auto;
     align-items: center;
-    justify-content: space-between;
     gap: 16px;
     margin: auto;
     max-width: var(--max-content-width);
@@ -33,20 +33,13 @@
   }
 
   /* nav brand */
-  header nav .nav-brand {
-    flex: 1 1 auto;
-    display: flex;
-    justify-content: center;
-  }
-
-  header nav .nav-brand a {
-    display: flex;
-    align-items: center;
+  header nav .nav-brand-list {
+    display: none;
   }
 
   header nav .nav-brand .icon {
-    height: 32px;
-    width: 32px;
+    height: 44px;
+    width: 44px;
   }
 
   /* nav sections */
@@ -56,9 +49,7 @@
 
   /* nav tools */
   header nav .nav-tools {
-    display: flex;
-    gap: 12px;
-    align-items: center;
+    justify-self: end;
   }
 
   header nav .nav-tools ul {
@@ -70,9 +61,19 @@
     align-items: center;
   }
 
-  header nav .nav-tools .icon {
-    height: 24px;
-    width: 24px;
+  header nav .nav-tools a.button,
+  header nav .nav-tools button {
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+  }
+
+  header nav .nav-tools .search-form {
+    display: none;
+  }
+
+  header nav .nav-tools ul > li > ul {
+    display: none;
   }
 
   /* hamburger */
