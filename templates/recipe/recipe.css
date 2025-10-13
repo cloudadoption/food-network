@@ -1,1 +1,34 @@
-/* stylelint-disable-next-line no-empty-source */
+/* Recipe template styles */
+
+/* Hide sidebar on mobile */
+body.recipe aside {
+  display: none;
+}
+
+/* Desktop layout - main and aside side by side using grid */
+@media (width >= 900px) {
+  body.recipe {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  /* Header and footer span both columns */
+  body.recipe header,
+  body.recipe footer {
+    grid-column: 1 / -1;
+  }
+
+  body.recipe main {
+    grid-column: 1;
+    min-width: 0; /* Allow grid item to shrink below content size */
+  }
+
+  body.recipe aside {
+    display: block;
+    grid-column: 2;
+    position: sticky;
+    top: 1rem;
+  }
+}
