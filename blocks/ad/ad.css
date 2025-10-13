@@ -1,0 +1,87 @@
+@layer blocks {
+  .ad {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #e0e0e0;
+    margin: 20px auto;
+    position: relative;
+    overflow: hidden;
+
+    /* Default ad size: 300x600 */
+    width: 300px;
+    height: 600px;
+  }
+
+  /* Banner: 728x90 */
+  .ad.banner {
+    width: 100%;
+    max-width: 728px;
+    height: 90px;
+  }
+
+  /* Large Banner: 970x185 */
+  .ad.large-banner {
+    width: 100%;
+    max-width: 970px;
+    height: 185px;
+  }
+
+  /* Square: 300x300 */
+  .ad.square {
+    width: 300px;
+    height: 300px;
+  }
+
+  /* Ad placeholder content */
+  .ad::before {
+    content: 'Advertisement';
+    color: #999;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* Ad content (for FPO image or actual ad) */
+  .ad img,
+  .ad picture {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* Loaded state removes placeholder text */
+  .ad.loaded::before {
+    display: none;
+  }
+
+  /* Mobile responsiveness */
+  @media (width <= 600px) {
+    /* On mobile, banners and large banners scale down */
+    .ad.banner,
+    .ad.large-banner {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    /* Default ad is hidden on mobile, or scaled down */
+    .ad:not(.banner, .large-banner, .square) {
+      width: 300px;
+      height: 250px;
+    }
+
+    /* Square ads scale appropriately */
+    .ad.square {
+      width: 250px;
+      height: 250px;
+    }
+  }
+
+  /* Tablet and up */
+  @media (width >= 900px) {
+    .ad {
+      margin: 30px auto;
+    }
+  }
+}

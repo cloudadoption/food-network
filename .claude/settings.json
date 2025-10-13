@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh:*)",
+      "Bash(curl:*)",
+      "Bash(node:*)",
+      "Bash(npm install)",
+      "Bash(npm run lint)",
+      "Bash(npm run lint:*)",
+      "Bash(npx -y @adobe/aem-cli up:*)",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(cat:*)",
+      "Bash(mkdir:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
