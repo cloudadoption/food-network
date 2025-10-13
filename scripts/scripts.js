@@ -7,11 +7,82 @@ import {
   decorateSections,
   decorateBlocks,
   decorateTemplateAndTheme,
+  getMetadata,
   waitForFirstImage,
   loadSection,
   loadSections,
   loadCSS,
+  toClassName,
 } from './aem.js';
+
+const TEMPLATE_DEFAULT = 'default';
+
+const templateState = {
+  name: TEMPLATE_DEFAULT,
+  raw: '',
+  basePath: '',
+  module: {
+    eager: null,
+    lazy: null,
+    delayed: null,
+  },
+  promise: null,
+};
+
+const pickPhase = (module, phase) => {
+  if (module && typeof module[phase] === 'function') return module[phase];
+  if (module?.default && typeof module.default[phase] === 'function') return module.default[phase];
+  return null;
+};
+
+function normalizeTemplateModule(module) {
+  return {
+    eager: pickPhase(module, 'eager'),
+    lazy: pickPhase(module, 'lazy'),
+    delayed: pickPhase(module, 'delayed'),
+  };
+}
+
+async function ensureTemplate() {
+  if (!templateState.promise) {
+    templateState.promise = (async () => {
+      const rawTemplate = getMetadata('template');
+      const sanitizedTemplate = toClassName(rawTemplate) || TEMPLATE_DEFAULT;
+      const basePath = `${window.hlx.codeBasePath}/templates/${sanitizedTemplate}/${sanitizedTemplate}`;
+
+      templateState.raw = rawTemplate;
+      templateState.name = sanitizedTemplate;
+      templateState.basePath = basePath;
+
+      try {
+        await loadCSS(`${basePath}.css`);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(`[templates] Failed to load CSS for ${sanitizedTemplate}`, error);
+      }
+
+      let module = {};
+      try {
+        module = await import(`${basePath}.js`);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(`[templates] Failed to load JS for ${sanitizedTemplate}`, error);
+      }
+
+      templateState.module = normalizeTemplateModule(module);
+      window.hlx = window.hlx || {};
+      window.hlx.template = {
+        name: templateState.name,
+        raw: templateState.raw,
+        basePath: templateState.basePath,
+      };
+
+      return templateState;
+    })();
+  }
+
+  return templateState.promise;
+}
 
 /**
  * Builds hero block and prepends to main in a new section.
@@ -91,9 +162,18 @@ export function decorateMain(main) {
  */
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
+  const { module } = await ensureTemplate();
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
+    if (module.eager) {
+      try {
+        await module.eager({ document: doc, main });
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('[templates] Eager phase failed', error);
+      }
+    }
     decorateMain(main);
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
@@ -115,7 +195,19 @@ async function loadEager(doc) {
  */
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
-  await loadSections(main);
+  const { module } = await ensureTemplate();
+  if (module.lazy) {
+    try {
+      await module.lazy({ document: doc, main });
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('[templates] Lazy phase failed', error);
+    }
+  }
+
+  if (main) {
+    await loadSections(main);
+  }
 
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
@@ -131,17 +223,30 @@ async function loadLazy(doc) {
 /**
  * Loads everything that happens a lot later,
  * without impacting the user experience.
+ * @param {Element} doc The container element
  */
-function loadDelayed() {
+function loadDelayed(doc) {
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
+  ensureTemplate()
+    .then(({ module }) => {
+      if (module.delayed) {
+        const main = doc.querySelector('main');
+        return module.delayed({ document: doc, main });
+      }
+      return null;
+    })
+    .catch((error) => {
+      // eslint-disable-next-line no-console
+      console.error('[templates] Delayed phase failed', error);
+    });
 }
 
 async function loadPage() {
   await loadEager(document);
   await loadLazy(document);
-  loadDelayed();
+  loadDelayed(document);
 }
 
 loadPage();

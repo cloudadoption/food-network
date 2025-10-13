@@ -1,0 +1,18 @@
+/* Default template structural adjustments */
+
+body.default main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+body.default main > .section {
+  margin-inline: auto;
+}
+
+@media (width >= 900px) {
+  body.default main {
+    max-width: 1440px;
+    padding: 0 32px;
+  }
+}
