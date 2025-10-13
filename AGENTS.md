@@ -114,6 +114,7 @@ Pages are progressively loaded in three phases to maximize performance. This pro
 ### Local Development
 1. Run `npx -y @adobe/aem-cli up --no-open` to start the AEM Proxy server
 2. Open `http://localhost:3000` in your browser, puppeteer, playwright, or other tools. If none of those are available, instruct the human to open the URL in the browser and give feedback
+  1. use `--port` flag to specify a port other than 3000
 3. Make changes to files - they will auto-reload
 4. Use browser dev tools to test responsive design
 
@@ -133,7 +134,9 @@ Pages are progressively loaded in three phases to maximize performance. This pro
 
 ### Tools
 
-- puppeteer is installed as a dev dependency. You should write small scripts to verify functionality.
+- puppeteer is installed as a dev dependency. You should write small scripts to take screenshots and verify functionality.
+  - These scripts are temporary and can be deleted/don't need to be committed.
+  - you may want to add screenshots to your PR to help the human reviewer visualize the changes you made
 
 ### Linting
 - JavaScript: ESLint with Airbnb base configuration
