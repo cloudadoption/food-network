@@ -131,6 +131,10 @@ Pages are progressively loaded in three phases to maximize performance. This pro
 
 ## Testing & Quality Assurance
 
+### Tools
+
+- puppeteer is installed as a dev dependency. You should write small scripts to verify functionality.
+
 ### Linting
 - JavaScript: ESLint with Airbnb base configuration
 - CSS: Stylelint with standard configuration
@@ -141,7 +145,7 @@ Pages are progressively loaded in three phases to maximize performance. This pro
 - Follow AEM Edge Delivery performance best practices https://www.aem.live/developer/keeping-it-100
 - Images uploaded by authors are automatically optimized, all images and assets committed to git must be optimized and checked for size
 - Use lazy loading for non-critical resources (`lazy-styles.css` and `delayed.js`)
-- Minimize JavaScript bundle size by avoiding dependencies, using automatic code splitting provided by `/blocks/`
+- Minimize JavaScript bundle size by avoiding dependencies, using automatic code splitting provided by `/blocks/`, and using dynamic `import()` calls for code not needed upfront
 
 ### Accessibility
 - Ensure proper heading hierarchy
