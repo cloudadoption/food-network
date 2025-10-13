@@ -24,62 +24,58 @@ export default async function decorate(block) {
   const sections = [...fragment.querySelectorAll(':scope .section')];
   const [linksSection, metaSection] = sections;
 
-  const createTop = () => {
-    const list = linksSection?.querySelector('ul');
-    if (!list) return null;
+  if (linksSection) {
+    const list = linksSection.querySelector('ul');
+    if (list) {
+      linksSection.classList.add('footer-nav');
+      list.classList.add('footer-links');
+      list.querySelectorAll('li').forEach((item) => {
+        const anchor = item.querySelector('a');
+        if (anchor) {
+          anchor.classList.add('footer-link');
+          return;
+        }
 
-    list.classList.add('footer-links');
-    list.querySelectorAll('li').forEach((item) => {
-      item.classList.add('footer-link-item');
-      const anchor = item.querySelector('a');
-      if (anchor) {
-        anchor.classList.add('footer-link');
-        return;
+        const text = item.textContent.trim();
+        if (!text) {
+          item.remove();
+          return;
+        }
+
+        const span = document.createElement('span');
+        span.textContent = text;
+        span.classList.add('footer-link', 'footer-link-static');
+        item.textContent = '';
+        item.append(span);
+      });
+
+      let nav = list.closest('nav');
+      if (!nav) {
+        nav = document.createElement('nav');
+        nav.setAttribute('aria-label', 'Footer navigation');
+        const parent = list.parentElement;
+        nav.append(list);
+        if (parent) {
+          parent.append(nav);
+        } else {
+          linksSection.append(nav);
+        }
+      } else {
+        nav.setAttribute('aria-label', 'Footer navigation');
       }
 
-      const text = item.textContent.trim();
-      if (!text) {
-        item.remove();
-        return;
-      }
+      footerContent.append(linksSection);
+    }
+  }
 
-      const span = document.createElement('span');
-      span.textContent = text;
-      span.classList.add('footer-link', 'footer-link-static');
-      item.textContent = '';
-      item.append(span);
-    });
-
-    const nav = document.createElement('nav');
-    nav.setAttribute('aria-label', 'Footer navigation');
-    nav.append(list);
-
-    const topWrapper = document.createElement('div');
-    topWrapper.classList.add('footer-top');
-    topWrapper.append(nav);
-    return topWrapper;
-  };
-
-  const createBottom = () => {
-    const list = metaSection?.querySelector('ul');
-    if (!list) return null;
-
-    list.classList.add('footer-meta');
-    list.querySelectorAll('li').forEach((item) => {
-      item.classList.add('footer-meta-item');
-    });
-
-    const bottomWrapper = document.createElement('div');
-    bottomWrapper.classList.add('footer-bottom');
-    bottomWrapper.append(list);
-    return bottomWrapper;
-  };
-
-  const top = createTop();
-  const bottom = createBottom();
-
-  if (top) footerContent.append(top);
-  if (bottom) footerContent.append(bottom);
+  if (metaSection) {
+    const list = metaSection.querySelector('ul');
+    if (list) {
+      metaSection.classList.add('footer-meta');
+      list.classList.add('footer-meta-list');
+      footerContent.append(metaSection);
+    }
+  }
 
   if (footerContent.childElementCount > 0) {
     block.append(footerContent);
