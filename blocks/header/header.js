@@ -104,13 +104,28 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
 }
 
 /**
+ * Loads a flyout menu dynamically
+ * @param {string} flyoutId The flyout ID to load
+ * @returns {HTMLElement} The flyout content element
+ */
+async function loadFlyout(flyoutId) {
+  const flyoutPath = `/fragments/nav/${flyoutId}`;
+  const fragment = await loadFragment(flyoutPath);
+  if (fragment) {
+    const flyoutContent = fragment.querySelector('.default-content-wrapper');
+    return flyoutContent;
+  }
+  return null;
+}
+
+/**
  * loads and decorates the header, mainly the nav
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
   // load nav as fragment
   const navMeta = getMetadata('nav');
-  const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
+  const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/fragments/nav';
   const fragment = await loadFragment(navPath);
 
   // decorate nav DOM
@@ -135,14 +150,57 @@ export default async function decorate(block) {
   const navSections = nav.querySelector('.nav-sections');
   if (navSections) {
     navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
-      if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
-      navSection.addEventListener('click', () => {
+      // Check if this nav item has a flyout
+      const flyoutId = navSection.getAttribute('data-flyout');
+      if (flyoutId) {
+        navSection.classList.add('nav-drop');
+        
+        // Create a placeholder for the flyout content
+        const flyoutContainer = document.createElement('div');
+        flyoutContainer.classList.add('nav-flyout');
+        navSection.appendChild(flyoutContainer);
+        
+        let flyoutLoaded = false;
+        
+        // Load flyout on hover/click
+        const loadAndShowFlyout = async () => {
+          if (!flyoutLoaded) {
+            const flyoutContent = await loadFlyout(flyoutId);
+            if (flyoutContent) {
+              flyoutContainer.appendChild(flyoutContent);
+              flyoutLoaded = true;
+            }
+          }
+        };
+
+        navSection.addEventListener('click', async () => {
+          if (isDesktop.matches) {
+            const expanded = navSection.getAttribute('aria-expanded') === 'true';
+            toggleAllNavSections(navSections);
+            if (!expanded) {
+              await loadAndShowFlyout();
+              navSection.setAttribute('aria-expanded', 'true');
+            } else {
+              navSection.setAttribute('aria-expanded', 'false');
+            }
+          }
+        });
+
+        // Preload on hover for desktop
         if (isDesktop.matches) {
-          const expanded = navSection.getAttribute('aria-expanded') === 'true';
-          toggleAllNavSections(navSections);
-          navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+          navSection.addEventListener('mouseenter', loadAndShowFlyout, { once: true });
         }
-      });
+      } else if (navSection.querySelector('ul')) {
+        // Legacy support for inline menus
+        navSection.classList.add('nav-drop');
+        navSection.addEventListener('click', () => {
+          if (isDesktop.matches) {
+            const expanded = navSection.getAttribute('aria-expanded') === 'true';
+            toggleAllNavSections(navSections);
+            navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+          }
+        });
+      }
     });
   }
 
