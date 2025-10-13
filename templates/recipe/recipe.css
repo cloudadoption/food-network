@@ -1,60 +1,62 @@
 /* Recipe template styles */
 
-body.recipe {
-  --recipe-accent-color: #e74c3c;
-  --recipe-bg-color: #fdf6f0;
-}
+@layer blocks {
+  body.recipe {
+    --recipe-accent-color: #e74c3c;
+    --recipe-bg-color: #fdf6f0;
+  }
 
-body.recipe main {
-  background-color: var(--recipe-bg-color);
-}
+  body.recipe main {
+    background-color: var(--recipe-bg-color);
+  }
 
-body.recipe h1 {
-  color: var(--recipe-accent-color);
-  font-family: Georgia, serif;
-  font-size: 2.5rem;
-  line-height: 1.2;
-}
+  body.recipe h1 {
+    color: var(--recipe-accent-color);
+    font-family: Georgia, serif;
+    font-size: 2.5rem;
+    line-height: 1.2;
+  }
 
-body.recipe h2 {
-  color: var(--recipe-accent-color);
-  border-bottom: 2px solid var(--recipe-accent-color);
-  padding-bottom: 0.5rem;
-  margin-top: 2rem;
-}
+  body.recipe h2 {
+    color: var(--recipe-accent-color);
+    border-bottom: 2px solid var(--recipe-accent-color);
+    padding-bottom: 0.5rem;
+    margin-top: 2rem;
+  }
 
-/* Recipe-specific styling for default content */
-body.recipe .section > .default-content-wrapper {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
-}
+  /* Recipe-specific styling for default content */
+  body.recipe .section > .default-content-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
 
-/* Recipe metadata display */
-body.recipe .recipe-metadata {
-  display: flex;
-  gap: 2rem;
-  margin: 1rem 0;
-  padding: 1rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
-}
+  /* Recipe metadata display */
+  body.recipe .recipe-metadata {
+    display: flex;
+    gap: 2rem;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+  }
 
-body.recipe .recipe-metadata > div {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
+  body.recipe .recipe-metadata > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
 
-body.recipe .recipe-metadata dt {
-  font-weight: bold;
-  color: var(--recipe-accent-color);
-  font-size: 0.875rem;
-  text-transform: uppercase;
-}
+  body.recipe .recipe-metadata dt {
+    font-weight: bold;
+    color: var(--recipe-accent-color);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+  }
 
-body.recipe .recipe-metadata dd {
-  margin: 0;
-  font-size: 1.125rem;
+  body.recipe .recipe-metadata dd {
+    margin: 0;
+    font-size: 1.125rem;
+  }
 }

@@ -1,5 +1,6 @@
-/* header and nav layout */
-header .nav-wrapper {
+@layer blocks {
+  /* header and nav layout */
+  header .nav-wrapper {
   background-color: var(--background-color);
   width: 100%;
   z-index: 2;
@@ -262,7 +263,8 @@ header nav .nav-sections ul > li > ul > li {
   }
 }
 
-/* tools */
-header nav .nav-tools {
-  grid-area: tools;
+  /* tools */
+  header nav .nav-tools {
+    grid-area: tools;
+  }
 }

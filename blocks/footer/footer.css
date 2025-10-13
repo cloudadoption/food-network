@@ -1,9 +1,10 @@
-footer {
-  background-color: #292929;
-  color: rgb(255 255 255 / 90%);
-  font-size: 0.8125rem;
-  line-height: 1.6;
-}
+@layer blocks {
+  footer {
+    background-color: #292929;
+    color: rgb(255 255 255 / 90%);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
 
 footer .footer {
   background-color: #292929;
@@ -105,8 +106,9 @@ footer .footer .footer-meta-list li {
     justify-content: center;
   }
 
-  footer .footer .footer-meta-list li {
-    max-width: none;
-    white-space: normal;
+    footer .footer .footer-meta-list li {
+      max-width: none;
+      white-space: normal;
+    }
   }
 }
