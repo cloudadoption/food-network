@@ -36,11 +36,11 @@ export default function decorate(block) {
       prevLink.setAttribute('aria-label', 'Previous recipe');
       prevLink.className = 'recipe-nav-link';
 
-      // Add prev icon/arrow
+      // Add prev icon/chevron
       const prevIcon = document.createElement('span');
       prevIcon.className = 'recipe-nav-icon';
       prevIcon.setAttribute('aria-hidden', 'true');
-      prevIcon.textContent = '←';
+      prevIcon.textContent = '‹';
 
       prevLink.prepend(prevIcon);
       prevDiv.append(prevLink);
@@ -59,11 +59,11 @@ export default function decorate(block) {
       nextLink.setAttribute('aria-label', 'Next recipe');
       nextLink.className = 'recipe-nav-link';
 
-      // Add next icon/arrow
+      // Add next icon/chevron
       const nextIcon = document.createElement('span');
       nextIcon.className = 'recipe-nav-icon';
       nextIcon.setAttribute('aria-hidden', 'true');
-      nextIcon.textContent = '→';
+      nextIcon.textContent = '›';
 
       nextLink.append(nextIcon);
       nextDiv.append(nextLink);
