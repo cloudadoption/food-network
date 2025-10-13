@@ -47,14 +47,32 @@ async function getFlyoutContent(flyoutId) {
 
   try {
     const fragment = await loadFragment(`/fragments/nav/${flyoutId}`);
-    const section = fragment?.querySelector('.section');
-    const content = section?.querySelector('.default-content-wrapper');
-    if (!content) {
+    if (!fragment) {
       flyoutCache.set(flyoutId, null);
       return null;
     }
-    flyoutCache.set(flyoutId, content);
-    return content;
+    const flyoutRoot = document.createElement('div');
+    flyoutRoot.className = 'nav-flyout-content';
+    fragment.querySelectorAll('.section').forEach((section) => {
+      const group = document.createElement('div');
+      group.className = 'nav-flyout-group';
+      Array.from(section.children).forEach((child) => {
+        if (!child.classList.contains('section-metadata')) {
+          group.append(child.cloneNode(true));
+        }
+      });
+      if (group.childElementCount) {
+        flyoutRoot.append(group);
+      }
+    });
+
+    if (!flyoutRoot.childElementCount) {
+      flyoutCache.set(flyoutId, null);
+      return null;
+    }
+
+    flyoutCache.set(flyoutId, flyoutRoot);
+    return flyoutRoot;
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('[header] failed to load flyout', flyoutId, error);
