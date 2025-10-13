@@ -70,7 +70,9 @@ The repository provides the basic structure, blocks, and configuration needed to
 CMS authored content is a key part of every AEM Website. The content of a page is broken into sections. Sections can have default content (text, headings, links, etc.) as well as content in blocks.
 
 You can create static content for testing in a dedicated drafts folder. If you do this, be sure to specify the folder location when starting the development server by running `npx -y @adobe/aem-cli up --no-open --forward-browser-logs --html-folder drafts`
+
 Background on content structure https://www.aem.live/developer/markup-sections-blocks
+
 You can inspect the contents of any page with `curl http://localhost:3000/path/to/page` and `curl http://localhost:3000/path/to/page.md`
 
 ### Blocks
@@ -114,7 +116,7 @@ Pages are progressively loaded in three phases to maximize performance. This pro
 ### Local Development
 1. Run `npx -y @adobe/aem-cli up --no-open` to start the AEM Proxy server
 2. Open `http://localhost:3000` in your browser, puppeteer, playwright, or other tools. If none of those are available, instruct the human to open the URL in the browser and give feedback
-  1. use `--port` flag to specify a port other than 3000
+  1. use `--port` flag to specify a port other than 3000 (recommended to avoid conflicts with other agents)
 3. Make changes to files - they will auto-reload
 4. Use browser dev tools to test responsive design
 
@@ -179,6 +181,13 @@ With this information, you can construct URLs for the preview environment (same 
 4. use `gh checks` to verify the status of code synchronization, linting, and performance tests
 5. A human reviewer will review the code, inspect the provided URL and merge the PR
 6. AEM Code Sync updates the main branch for production
+
+For this POC, the 2 pages are at:
+
+- /recipes/goulash-8670582
+- recipes/perfect-pot-roast-recipe-2118771
+
+These are the 2 pages you should be testing most changes against and using as test links in your PRs.
 
 ## Common Tasks
 
