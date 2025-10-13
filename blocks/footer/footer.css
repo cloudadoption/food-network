@@ -1,20 +1,112 @@
 footer {
-  background-color: var(--light-color);
+  background-color: #111;
+  color: rgb(255 255 255 / 92%);
   font-size: var(--body-font-size-xs);
 }
 
-footer .footer > div {
-  margin: auto;
-  max-width: 1200px;
-  padding: 40px 24px 24px;
+footer .footer {
+  padding: 0;
 }
 
-footer .footer p {
+footer .footer a:any-link {
+  color: inherit;
+  transition: color 0.2s ease;
+}
+
+footer .footer a:hover {
+  color: rgb(255 255 255 / 80%);
+  text-decoration: underline;
+}
+
+footer .footer .footer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 32px 16px 24px;
+}
+
+footer .footer .footer-top {
+  display: flex;
+  justify-content: center;
+}
+
+footer .footer nav {
+  width: 100%;
+}
+
+footer .footer .footer-links,
+footer .footer .footer-meta {
+  list-style: none;
   margin: 0;
+  padding: 0;
+}
+
+footer .footer .footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px 18px;
+  text-align: center;
+}
+
+footer .footer .footer-link {
+  color: inherit;
+  display: inline-block;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+footer .footer .footer-link-static {
+  color: rgb(255 255 255 / 72%);
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+footer .footer .footer-bottom {
+  border-top: 1px solid rgb(255 255 255 / 24%);
+  padding-top: 16px;
+}
+
+footer .footer .footer-meta {
+  align-items: center;
+  color: rgb(255 255 255 / 72%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+}
+
+footer .footer .footer-meta-item {
+  max-width: 28ch;
+}
+
+@media (width >= 600px) {
+  footer .footer .footer-meta-item {
+    max-width: none;
+  }
 }
 
 @media (width >= 900px) {
-  footer .footer > div {
-    padding: 40px 32px 24px;
+  footer .footer .footer-content {
+    gap: 32px;
+    padding: 40px 32px 32px;
+  }
+
+  footer .footer .footer-links {
+    gap: 12px 24px;
+  }
+
+  footer .footer .footer-meta {
+    flex-direction: row;
+    gap: 24px;
+    justify-content: center;
+  }
+
+  footer .footer .footer-meta-item {
+    white-space: nowrap;
   }
 }
