@@ -1,0 +1,94 @@
+.newsletter {
+  background-color: #f5f5f5;
+  padding: 24px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.newsletter-description {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+}
+
+.newsletter-description p {
+  margin: 0 0 12px;
+}
+
+.newsletter-description p:last-child {
+  margin-bottom: 0;
+}
+
+.newsletter-description em {
+  font-size: 12px;
+  color: #666;
+}
+
+.newsletter-form {
+  margin: 8px 0;
+}
+
+.newsletter-form-element {
+  display: flex;
+  gap: 0;
+  align-items: stretch;
+}
+
+.newsletter-input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #d0d0d0;
+  border-right: none;
+  border-radius: 2px 0 0 2px;
+  font-size: 14px;
+  font-family: inherit;
+  background-color: #fff;
+}
+
+.newsletter-input:focus {
+  outline: none;
+  border-color: #999;
+  box-shadow: none;
+}
+
+.newsletter-button {
+  padding: 10px 20px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 0 2px 2px 0;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: inherit;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.newsletter-button:hover {
+  background-color: #333;
+}
+
+.newsletter-button:active {
+  background-color: #000;
+}
+
+.newsletter-footer {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.newsletter-description a,
+.newsletter-footer a {
+  color: #06c;
+  text-decoration: none;
+}
+
+.newsletter-description a:hover,
+.newsletter-footer a:hover {
+  text-decoration: underline;
+}
