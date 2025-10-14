@@ -1,0 +1,23 @@
+.recipe-directions ol {
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid #ddd;
+    list-style: none;
+}
+
+.recipe-directions ol > li {
+    border-bottom: 1px solid #ddd;
+    padding: 16px 0;
+    counter-increment: recipe-directions-counter;
+    position: relative;
+    padding-left: 40px;
+}
+
+.recipe-directions ol > li::before {
+    content: counter(recipe-directions-counter) " ";
+    font-weight: 700;
+  font-size: var(--heading-font-size-l);
+  position: absolute;
+  left: 0;
+  top: 0;
+}

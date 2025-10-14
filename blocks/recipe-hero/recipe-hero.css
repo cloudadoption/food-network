@@ -1,0 +1,133 @@
+@layer blocks {
+    .recipe-hero {
+        display: grid;
+        grid-template: "img" auto
+                       "author" auto
+                       "title" auto
+                       "reviews" auto
+                       / 1fr;
+        position: relative;
+    }
+
+    .recipe-hero .recipe-hero-img {
+        grid-area: img;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        position: relative;
+    }
+
+    .recipe-hero .recipe-hero-img picture > img {
+        position: absolute;
+        inset: 0;
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .recipe-hero.video .recipe-hero-img .recipe-hero-play-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        position: absolute;
+        border-radius: 100vw;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgb(0 0 0 / 50%);
+        color: rgb(255 255 255 / 50%);
+        text-transform: uppercase;
+        z-index: 1;
+        min-width: 200px;
+    }
+
+    /** author */
+    .recipe-hero .recipe-hero-author {
+        grid-area: author;
+        text-align: center;
+        position: relative;
+    }
+
+    .recipe-hero .recipe-hero-author .recipe-hero-author-img {
+        position: absolute;
+        left: 50%;
+        top: -62.5px;
+        transform: translateX(-50%);
+        width: 125px;
+        height: 125px;
+        border-radius: 50%;
+        border: 4px solid var(--background-color);
+    }
+
+    /* stylelint-disable-next-line no-descending-specificity */
+    .recipe-hero .recipe-hero-author .recipe-hero-author-img img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+    }
+
+    .recipe-hero .recipe-hero-author p {
+        padding-top: 62.5px;
+    }
+
+    /** title */
+    .recipe-hero .recipe-hero-title {
+        grid-area: title;
+        text-align: center;
+    }
+
+    .recipe-hero .recipe-hero-title h1 {
+        margin-top: .25em;
+    }
+
+    /** review */
+    .recipe-hero .recipe-hero-review {
+        grid-area: reviews;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 24px;
+        visibility: hidden;
+    }
+
+    /** extended  layout */
+    .recipe-hero.extended {
+        grid-template: "title" auto
+                       "author" auto
+                       "reviews" auto
+                       "img" auto
+                       / 1fr;
+    }
+
+    .recipe-hero.extended .recipe-hero-author {
+        text-align: left;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .recipe-hero.extended .recipe-hero-author .recipe-hero-author-img {
+        position: relative;
+        display: block;
+        width: 50px;
+        height: 50px;
+        left: 0;
+        top: 0;
+        transform: none;
+    }
+
+    .recipe-hero.extended .recipe-hero-author p {
+        padding: 0;
+        margin: 0;
+    }
+
+    .recipe-hero.extended .recipe-hero-review {
+        text-align: left;
+    }
+
+    .recipe-hero.extended .recipe-hero-title {
+        text-align: left;
+    }
+}
