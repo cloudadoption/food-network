@@ -1,13 +1,12 @@
 @layer blocks {
   .recipe-nav {
-    border-top: 1px solid #e5e5e5;
-    border-bottom: 1px solid #e5e5e5;
+    background-color: white;
   }
 
   .recipe-nav nav {
     display: flex;
     justify-content: space-between;
-    padding: 12px 0;
+    padding: 12px;
   }
 
   .recipe-nav-link {

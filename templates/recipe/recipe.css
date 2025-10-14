@@ -12,7 +12,7 @@
     @media (width >= 900px) {
       body.recipe .recipe-content {
         display: grid;
-        grid-template-columns: 1fr min(300px, 30%);
+        grid-template-columns: 1fr min(350px, 33%);
         align-items: start;
         max-width: var(--max-content-width);
         margin: 0 auto;
