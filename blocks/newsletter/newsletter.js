@@ -18,16 +18,15 @@ export default function decorate(block) {
   const footerRow = rows[2];
   const footerContent = footerRow?.querySelector('div');
 
-  // Create new structure
-  const container = document.createElement('div');
-  container.className = 'newsletter-container';
+  // Clear block
+  block.textContent = '';
 
   // Add description section
   if (descriptionContent) {
     const descSection = document.createElement('div');
     descSection.className = 'newsletter-description';
     descSection.innerHTML = descriptionContent.innerHTML;
-    container.append(descSection);
+    block.append(descSection);
   }
 
   // Create form section
@@ -36,7 +35,7 @@ export default function decorate(block) {
     formSection.className = 'newsletter-form';
 
     const form = document.createElement('form');
-    form.className = 'newsletter-form-wrapper';
+    form.className = 'newsletter-form-element';
 
     // Get placeholder text and button text
     const paragraphs = formContent.querySelectorAll('p');
@@ -59,7 +58,7 @@ export default function decorate(block) {
     form.append(input);
     form.append(button);
     formSection.append(form);
-    container.append(formSection);
+    block.append(formSection);
 
     // Prevent form submission (no-op for now)
     form.addEventListener('submit', (e) => {
@@ -72,9 +71,6 @@ export default function decorate(block) {
     const footerSection = document.createElement('div');
     footerSection.className = 'newsletter-footer';
     footerSection.innerHTML = footerContent.innerHTML;
-    container.append(footerSection);
+    block.append(footerSection);
   }
-
-  // Replace block content
-  block.replaceChildren(container);
 }
