@@ -184,8 +184,8 @@ With this information, you can construct URLs for the preview environment (same 
 
 For this POC, the 2 pages are at:
 
-- /recipes/goulash-8670582
-- recipes/perfect-pot-roast-recipe-2118771
+- /recipes/goulash-8670582 (original version at https://www.foodnetwork.com/recipes/food-network-kitchen/goulash-8670582)
+- /recipes/perfect-pot-roast-recipe-2118771 (original verion at https://www.foodnetwork.com/recipes/ree-drummond/perfect-pot-roast-recipe-2118771)
 
 These are the 2 pages you should be testing most changes against and using as test links in your PRs.
 
