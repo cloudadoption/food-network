@@ -115,9 +115,8 @@ Pages are progressively loaded in three phases to maximize performance. This pro
 
 ### Local Development
 
-1. Run `npx -y @adobe/aem-cli up --no-open --port {port number}` to start the AEM Proxy server. Pikc a random number between 3000 and 4000 for the port to avoid conflicts with other agents
+1. Run `npx -y @adobe/aem-cli up --no-open` to start the AEM Proxy server.
 2. Open `http://localhost:3000` in your browser, puppeteer, playwright, or other tools. If none of those are available, instruct the human to open the URL in the browser and give feedback
-  1. use `--port` flag to specify a port other than 3000 (recommended to avoid conflicts with other agents)
 3. Make changes to files - they will auto-reload
 4. Use browser dev tools to test your changes
 
