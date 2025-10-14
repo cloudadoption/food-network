@@ -22,7 +22,6 @@ export default function decorate(block) {
 
   // Create navigation container
   const nav = document.createElement('nav');
-  nav.className = 'recipe-nav-container';
   nav.setAttribute('aria-label', 'Recipe navigation');
 
   // Process prev link (first cell)

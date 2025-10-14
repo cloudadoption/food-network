@@ -1,140 +1,68 @@
 .recipe-info {
-  width: 100%;
   border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
   padding: 20px 16px;
-  margin: 20px 0;
+  margin: 20px 16px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 16px;
 }
 
-.recipe-info-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px 32px;
-  max-width: 1200px;
-  margin: 0 auto;
+@media (width >= 600px) {
+  .recipe-info {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 .recipe-info-item {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  padding: 4px;
+  border-right: 1px solid #ddd;
 }
 
-.recipe-info-label {
-  font-size: 14px;
-  line-height: 1.4;
-  color: #333;
-  font-weight: normal;
+.recipe-info-item:last-child {
+  border-right: none;
 }
 
-.recipe-info-value {
-  font-size: 16px;
-  line-height: 1.4;
-  font-weight: bold;
-  color: #000;
+.recipe-info-item:nth-child(2n) {
+  border-right: none;
 }
 
-/* Mobile layout:
-   Column 1: Level, Yield, Nutrition Info
-   Column 2: Total, Prep/Active, Cook (if present)
-*/
-.recipe-info-item:nth-child(1) {
-  grid-column: 1;
-  order: 1;
-}
-
-.recipe-info-item:nth-child(2) {
-  grid-column: 2;
-  order: 1;
-}
-
-.recipe-info-item:nth-child(3) {
-  grid-column: 2;
-  order: 2;
-}
-
-.recipe-info-item:nth-child(4) {
-  grid-column: 1;
-  order: 2;
-}
-
-.recipe-info-item.nutrition-info {
-  grid-column: 1;
-  order: 3;
-}
-
-.nutrition-link {
-  color: #d73400;
-  text-decoration: none;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.nutrition-link:hover {
-  text-decoration: underline;
-}
-
-/* Tablet and desktop - 3 column layout */
 @media (width >= 600px) {
-  .recipe-info {
-    padding: 24px 0;
-  }
+    .recipe-info-item {
+        flex-direction: row;
+        align-items: center;
+        gap: 2ch;
+        padding: 0 8px;
+    }
 
-  .recipe-info-container {
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 0;
+  .recipe-info-item:nth-child(3n) {
+    border-right: none;
   }
-
-  .recipe-info-item {
-    padding: 0 32px;
+  
+  .recipe-info-item:nth-child(2n) {
     border-right: 1px solid #ddd;
-    order: initial;
   }
 
   .recipe-info-item:last-child {
     border-right: none;
   }
+}
 
-  /* Desktop layout:
-     Column 1: Level, Total
-     Column 2: Prep/Active, Cook (if present)
-     Column 3: Yield, Nutrition Info
-  */
-  .recipe-info-item:nth-child(1) {
-    grid-column: 1;
-    grid-row: 1;
-  }
 
-  .recipe-info-item:nth-child(2) {
-    grid-column: 1;
-    grid-row: 2;
-  }
 
-  .recipe-info-item:nth-child(3) {
-    grid-column: 2;
-    grid-row: 1;
-  }
+.recipe-info-label {
+  color: #333;
+  font-size: var(--body-font-size-xs);
+}
 
-  .recipe-info-item:nth-child(4) {
-    grid-column: 3;
-    grid-row: 1;
-  }
+.recipe-info-value {
+  font-weight: 500;
+}
 
-  .recipe-info-item.nutrition-info {
-    grid-column: 3;
-    grid-row: 2;
-  }
-
-  /* If there's a 5th item (Cook time), adjust layout */
-  .recipe-info-item:nth-child(5) {
-    grid-column: 2;
-    grid-row: 2;
-  }
-
-  /* Adjust nutrition info when there are 5 items */
-  .recipe-info-item:nth-child(5) ~ .nutrition-info {
-    grid-column: 3;
-    grid-row: 2;
-  }
+.nutrition-link {
+  color: #d73400;
+  text-decoration: none;
+  font-weight: 600;
 }
