@@ -214,7 +214,7 @@
     color: var(--text-color);
   }
 
-  main img {
+  img {
     max-width: 100%;
     width: auto;
     height: auto;

@@ -16,11 +16,7 @@ export default async function decorate(block) {
   }).filter((item) => item !== null);
 
   // Clear the block
-  block.innerHTML = '';
-
-  // Create a container for the info items
-  const container = document.createElement('div');
-  container.className = 'recipe-info-container';
+  block.replaceChildren();
 
   // Create info items based on what's available
   items.forEach((item) => {
@@ -37,7 +33,7 @@ export default async function decorate(block) {
 
     infoItem.appendChild(label);
     infoItem.appendChild(value);
-    container.appendChild(infoItem);
+    block.appendChild(infoItem);
   });
 
   // Add nutrition info link
@@ -54,7 +50,5 @@ export default async function decorate(block) {
   });
 
   nutritionItem.appendChild(nutritionLink);
-  container.appendChild(nutritionItem);
-
-  block.appendChild(container);
+  block.appendChild(nutritionItem);
 }

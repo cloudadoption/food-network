@@ -19,6 +19,12 @@ function buildAutoBlocks(doc) {
     const main = doc.querySelector('main');
     if (!main) return;
 
+    const wrapper = doc.createElement('div');
+    wrapper.className = 'recipe-content';
+
+    main.before(wrapper);
+    wrapper.append(main);
+
     // Create aside with recipe sidebar block
     const aside = doc.createElement('aside');
     const section = doc.createElement('div');
@@ -26,7 +32,7 @@ function buildAutoBlocks(doc) {
     aside.append(section);
 
     // Insert aside after main
-    main.parentElement.insertBefore(aside, main.nextSibling);
+    wrapper.append(aside);
 
     // Decorate the aside (prepare sections and blocks)
     decorateSections(aside);

@@ -4,33 +4,34 @@
     justify-content: center;
     align-items: center;
     background-color: #e0e0e0;
-    margin: 20px auto;
+    margin: 0 auto;
     position: relative;
     overflow: hidden;
 
     /* Default ad size: 300x600 */
     width: 300px;
-    height: 600px;
+    max-width: 100%;
+    aspect-ratio: 300 / 600;
   }
 
   /* Banner: 728x90 */
   .ad.banner {
     width: 100%;
     max-width: 728px;
-    height: 90px;
+    aspect-ratio: 728 / 90;
   }
 
   /* Large Banner: 970x185 */
   .ad.large-banner {
     width: 100%;
     max-width: 970px;
-    height: 185px;
+    aspect-ratio: 970 / 185;
   }
 
   /* Square: 300x300 */
   .ad.square {
     width: 300px;
-    height: 300px;
+    aspect-ratio: 300 / 300;
   }
 
   /* Ad placeholder content */
@@ -63,25 +64,6 @@
     .ad.large-banner {
       width: 100%;
       max-width: 100%;
-    }
-
-    /* Default ad is hidden on mobile, or scaled down */
-    .ad:not(.banner, .large-banner, .square) {
-      width: 300px;
-      height: 250px;
-    }
-
-    /* Square ads scale appropriately */
-    .ad.square {
-      width: 250px;
-      height: 250px;
-    }
-  }
-
-  /* Tablet and up */
-  @media (width >= 900px) {
-    .ad {
-      margin: 30px auto;
     }
   }
 }
