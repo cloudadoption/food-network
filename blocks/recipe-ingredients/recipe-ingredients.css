@@ -1,14 +1,7 @@
-/* Recipe Ingredients Block Styles */
-
 .recipe-ingredients {
-  background-color: white;
-  margin: 32px 0;
-}
-
-.recipe-ingredients .ingredients-container {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
 }
 
 /* Toggle Button at Top */
@@ -130,13 +123,6 @@
 }
 
 /* Action Buttons */
-.recipe-ingredients .ingredients-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 24px 0 0;
-}
-
 .recipe-ingredients .action-button {
   display: flex;
   align-items: center;

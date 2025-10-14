@@ -42,21 +42,10 @@
         grid-column: 2;
       }
     
-      body.recipe main .recipe-ingredients-container.recipe-direction-container {
+      body.recipe main .recipe-ingredients-container.recipe-directions-container {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 16px;
-      }
-    
-      body.recipe main .recipe-ingredients-wrapper,
-      body.recipe main .default-content-wrapper:has(+ .recipe-ingredients-wrapper) {
-        grid-column: 1;
-      }
-    
-      body.recipe main .recipe-direction-wrapper,
-      body.recipe main .default-content-wrapper:has(+ .recipe-direction-wrapper),
-      body.recipe main .recipe-direction-wrapper + .default-content-wrapper {
-        grid-column: 2;
       }
     }
 }

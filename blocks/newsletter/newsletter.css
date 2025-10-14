@@ -31,20 +31,18 @@
 }
 
 .newsletter-form-element {
-  display: flex;
-  gap: 0;
-  align-items: stretch;
+    position: relative;
 }
 
 .newsletter-input {
-  flex: 1;
   padding: 10px 12px;
   border: 1px solid #d0d0d0;
   border-right: none;
-  border-radius: 2px 0 0 2px;
+  border-radius: 100vw;
   font-size: 14px;
   font-family: inherit;
   background-color: #fff;
+  width: 100%;
 }
 
 .newsletter-input:focus {
@@ -54,18 +52,13 @@
 }
 
 .newsletter-button {
-  padding: 10px 20px;
-  background-color: #000;
-  color: #fff;
-  border: none;
-  border-radius: 0 2px 2px 0;
-  font-size: 12px;
-  font-weight: 700;
-  font-family: inherit;
-  text-transform: uppercase;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background-color 0.2s ease;
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: 0;
+  border-radius: 0 100vw 100vw 0;
+  font-size: var(--body-font-size-s);
 }
 
 .newsletter-button:hover {

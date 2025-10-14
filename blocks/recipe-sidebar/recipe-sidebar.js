@@ -7,6 +7,6 @@ import { loadFragment } from '../fragment/fragment.js';
 export default async function decorate(block) {
   const fragment = await loadFragment('/fragments/recipe-sidebar');
   if (fragment) {
-    block.replaceWith(...fragment.childNodes);
+    block.closest('.section').replaceWith(...fragment.childNodes);
   }
 }

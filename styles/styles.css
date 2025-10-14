@@ -49,6 +49,10 @@
     --header-height: calc(var(--header-ad-height) + var(--nav-height));
   }
 
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
   /* fallback fonts */
   @font-face {
     font-family: roboto-condensed-fallback;
@@ -236,9 +240,10 @@
     margin: 40px 0;
   }
 
-  main > .section > div {
+  main > .section > div,
+  aside > .section > div {
     max-width: var(--max-content-width);
-    margin: auto;
+    margin: 0 auto 1rem;
     padding: 0 24px;
   }
 
@@ -247,7 +252,8 @@
   }
 
   @media (width >= 900px) {
-    main > .section > div {
+    main > .section > div,
+    aside > .section > div {
       padding: 0 32px;
     }
   }

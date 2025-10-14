@@ -46,10 +46,6 @@ function updateShoppingListButton(button, checkboxes) {
  * @param {Element} block The recipe ingredients block element
  */
 export default function decorate(block) {
-  // Create container
-  const container = document.createElement('div');
-  container.className = 'ingredients-container';
-
   // Create select/deselect all toggle
   const toggleContainer = document.createElement('div');
   toggleContainer.className = 'ingredients-toggle-container';
@@ -130,15 +126,17 @@ export default function decorate(block) {
   actionsContainer.appendChild(substitutionsButton);
 
   // Assemble the block
-  container.appendChild(toggleContainer);
-  container.appendChild(ingredientsList);
-  container.appendChild(actionsContainer);
+  const h2 = document.createElement('h2');
+  h2.textContent = 'Ingredients:';
+
+  block.replaceChildren(h2, toggleContainer, ingredientsList, actionsContainer);
 
   // Get all checkboxes for event handling
   const checkboxes = ingredientsList.querySelectorAll('.ingredient-checkbox');
 
   // Add checkbox change handlers
   checkboxes.forEach((checkbox) => {
+    checkbox.checked = true;
     checkbox.addEventListener('change', () => {
       updateToggleLabel(toggleButton, checkboxes);
       updateShoppingListButton(addToListButton, checkboxes);
@@ -159,6 +157,6 @@ export default function decorate(block) {
     updateShoppingListButton(addToListButton, checkboxes);
   });
 
-  // Replace block content
-  block.replaceChildren(container);
+  updateToggleLabel(toggleButton, checkboxes);
+  updateShoppingListButton(addToListButton, checkboxes);
 }
