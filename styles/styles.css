@@ -23,8 +23,8 @@
     --light-color: #f8f8f8;
     --dark-color: #505050;
     --text-color: #1c1c1c;
-    --link-color: #3b63fb;
-    --link-hover-color: #1d3ecf;
+    --link-color: #e6003d;
+    --link-hover-color: var(--text-color);
 
     /* fonts */
     --body-font-family: roboto, roboto-fallback, sans-serif;
