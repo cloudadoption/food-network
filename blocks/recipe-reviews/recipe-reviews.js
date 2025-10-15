@@ -82,7 +82,7 @@ async function loadReviews(id, block) {
           <img src="${userReference?.imageUrl}" alt="">
           <div class="comment-info">
             <p>${userReference?.name}</p>
-            <p>${new Date(timestamp).toLocaleDateString()}</p>
+            <p>${new Date(timestamp).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
           </div>
           <div class="star-rating"></div>
           <p class="comment-text">${text}</p>
