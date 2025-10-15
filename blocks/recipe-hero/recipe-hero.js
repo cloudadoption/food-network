@@ -1,4 +1,5 @@
 import { getMetadata } from '../../scripts/aem.js';
+import { fetchRatings } from '../recipe-reviews/recipe-reviews.js';
 
 async function buildAuthor(authorContainer) {
   const author = getMetadata('author');
@@ -40,11 +41,34 @@ async function buildAuthor(authorContainer) {
 
 function buildReviews(reviewsContainer) {
   reviewsContainer.innerHTML = `
-    <div class="recip-hero-stars"></div>
-    <p><span class="recip-hero-reviews-count"></span> <span class="recip-hero-reviews-count">Reviews</span></p>
+    <div class="star-rating"></div>
+    <p class="recipe-hero-reviews-count"></p>
   `;
 
   reviewsContainer.classList.add('placeholder');
+
+  window.addEventListener('message', (event) => {
+    if (event.data === 'delayed' && event.origin === window.location.origin) {
+      const id = getMetadata('recipe-id');
+      fetchRatings(id).then((ratings) => {
+        if (ratings.ratingsSummaries && ratings.ratingsSummaries.length > 0) {
+          const ratingsSummary = ratings.ratingsSummaries[0];
+          const reviewCount = ratingsSummary.count;
+          const rating = Math.round(ratingsSummary.averageValue * 10) / 10;
+
+          const ratingsSummaryContainer = reviewsContainer.querySelector('.star-rating');
+          ratingsSummaryContainer.style.setProperty('--rating-width', `${(rating / 5) * 100}%`);
+          ratingsSummaryContainer.setAttribute('aria-label', `Rated ${rating} out of 5`);
+
+          const reviewCountContainer = reviewsContainer.querySelector('.recipe-hero-reviews-count');
+          reviewCountContainer.textContent = `${reviewCount} Reviews`;
+          reviewsContainer.classList.remove('placeholder');
+        }
+      }).catch(() => {
+        // nothing
+      });
+    }
+  });
 }
 
 export default async function decorate(block) {

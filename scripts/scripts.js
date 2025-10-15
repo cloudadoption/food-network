@@ -122,11 +122,11 @@ async function loadEager(doc) {
 
   const main = doc.querySelector('main');
   if (main) {
-    decorateMain(main);
     // Execute template eager phase before revealing body
     if (templateMod && templateMod.eager) {
       await templateMod.eager(doc);
     }
+    decorateMain(main);
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }

@@ -88,8 +88,11 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: 24px;
-        visibility: hidden;
+        min-height: 48px;
+    }
+
+    .recipe-hero .recipe-hero-review p {
+        margin: 0;
     }
 
     /** extended  layout */
@@ -125,6 +128,7 @@
 
     .recipe-hero.extended .recipe-hero-review {
         text-align: left;
+        justify-content: flex-start;
     }
 
     .recipe-hero.extended .recipe-hero-title {

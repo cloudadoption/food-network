@@ -6,9 +6,20 @@ import {
   loadSections,
 } from '../../scripts/aem.js';
 
-/**
- * Recipe template - demonstrates eager/lazy/delayed phases
- */
+function buildAside(doc, wrapper) {
+  // Create aside with recipe sidebar block
+  const aside = doc.createElement('aside');
+  const section = doc.createElement('div');
+  section.append(buildBlock('recipe-sidebar', { elems: [] }));
+  aside.append(section);
+
+  // Insert aside after main
+  wrapper.append(aside);
+
+  // Decorate the aside (prepare sections and blocks)
+  decorateSections(aside);
+  decorateBlocks(aside);
+}
 
 /**
  * Builds all synthetic blocks for recipe pages.
@@ -25,18 +36,13 @@ function buildAutoBlocks(doc) {
     main.before(wrapper);
     wrapper.append(main);
 
-    // Create aside with recipe sidebar block
-    const aside = doc.createElement('aside');
-    const section = doc.createElement('div');
-    section.append(buildBlock('recipe-sidebar', { elems: [] }));
-    aside.append(section);
+    buildAside(doc, wrapper);
 
-    // Insert aside after main
-    wrapper.append(aside);
-
-    // Decorate the aside (prepare sections and blocks)
-    decorateSections(aside);
-    decorateBlocks(aside);
+    const reviewsSection = doc.createElement('div');
+    const recipeId = getMetadata('recipe-id', doc);
+    const reviewsBlock = buildBlock('recipe-reviews', recipeId);
+    reviewsSection.append(reviewsBlock);
+    main.append(reviewsSection);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Recipe auto-blocking failed', error);

@@ -1,6 +1,9 @@
-// add delayed functionality here
-
-// Load ads in delayed phase
 import loadAds from '../blocks/ad/load-ads.js';
 
-loadAds();
+async function loadDelayed() {
+  window.postMessage('delayed', window.location.origin);
+
+  await loadAds();
+}
+
+loadDelayed();

@@ -1,1 +1,24 @@
-/* add global styles that can be loaded post LCP here */
+.star-rating {
+    position: relative;
+    display: inline-block;
+    font-size: 24px;
+    line-height: 1;
+    margin-right: 8px;
+
+    --rating-width: 0%;
+}
+
+.star-rating::before {
+    content: '★★★★★';
+    color: #ddd;
+}
+
+.star-rating::after {
+    content: '★★★★★';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--link-color);
+    overflow: hidden;
+    width: var(--rating-width);
+}
