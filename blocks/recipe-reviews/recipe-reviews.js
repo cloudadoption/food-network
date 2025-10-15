@@ -79,7 +79,7 @@ async function loadReviews(id, block) {
           text, timestamp, userReference, authorAssetRatings,
         } = review;
         li.innerHTML = `
-          <img src="${userReference?.imageUrl}" alt="">
+          <img src="${userReference?.imageUrl || '/icons/user.svg'}" alt="">
           <div class="comment-info">
             <p>${userReference?.name}</p>
             <p>${new Date(timestamp).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
